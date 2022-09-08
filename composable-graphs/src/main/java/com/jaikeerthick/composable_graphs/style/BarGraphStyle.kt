@@ -16,6 +16,7 @@ data class BarGraphStyle(
     val height: Dp = 300.dp,
     val colors: BarGraphColors = BarGraphColors(),
     val visibility: BarGraphVisibility = BarGraphVisibility(),
+    val xAxisLabelStyle: BarGraphXAxisLabelStyle = BarGraphXAxisLabelStyle.CENTERED,
     //val yAxisLabelPosition: LabelPosition = LabelPosition.LEFT
 )
 
@@ -27,3 +28,5 @@ data class BarGraphVisibility(
     val isGridVisible: Boolean = false,
     val isHeaderVisible: Boolean = true,
 )
+
+enum class BarGraphXAxisLabelStyle {CENTERED, FROM_TO}

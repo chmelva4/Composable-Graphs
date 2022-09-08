@@ -20,8 +20,10 @@ import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.color.Gradient1
 import com.jaikeerthick.composable_graphs.color.Gradient2
 import com.jaikeerthick.composable_graphs.color.LightGray
+import com.jaikeerthick.composable_graphs.data.GraphData
 import com.jaikeerthick.composable_graphs.helper.GraphHelper
 import com.jaikeerthick.composable_graphs.style.BarGraphStyle
+import com.jaikeerthick.composable_graphs.style.BarGraphXAxisLabelStyle
 import kotlin.math.roundToInt
 
 /**
@@ -30,6 +32,7 @@ import kotlin.math.roundToInt
 @Composable
 fun BarGraph(
     dataList: List<Number>,
+    xAxisData: List<GraphData>? = null,
     header: @Composable() () -> Unit = {},
     style: BarGraphStyle = BarGraphStyle(),
     onBarClicked: (value: Any) -> Unit = {},
@@ -94,7 +97,7 @@ fun BarGraph(
             val gridHeight = (size.height) - paddingBottom.toPx()
             val gridWidth = size.width - paddingRight.toPx()
 
-            val maxPointsSize = dataList.size + 1
+            val maxPointsSize = if (style.xAxisLabelStyle == BarGraphXAxisLabelStyle.FROM_TO) dataList.size + 1 else dataList.size
 
             // maximum of the data list
             val absMaxY = GraphHelper.getAbsoluteMax(dataList)
@@ -168,11 +171,12 @@ fun BarGraph(
              * Drawing text labels over the x- axis
              */
             if (style.visibility.isXAxisLabelVisible) {
+                val xLabelOffset: Float = if (style.xAxisLabelStyle == BarGraphXAxisLabelStyle.CENTERED) xItemSpacing / 2 else 0f
                 for (i in 0 until maxPointsSize) {
 
                     drawContext.canvas.nativeCanvas.drawText(
                         "$i",
-                        xItemSpacing * (i), // x
+                        (xItemSpacing * (i)) + xLabelOffset, // x
                         size.height, // y
                         Paint().apply {
                             color = style.colors.xAxisTextColor

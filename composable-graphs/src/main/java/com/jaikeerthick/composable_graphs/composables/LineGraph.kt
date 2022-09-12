@@ -124,7 +124,6 @@ fun LineGraph(
 
             // maximum of the y data list
             val absMaxY = GraphHelper.getAbsoluteMax(yAxisData)
-            val absMinY = 0
 
             val verticalStep = absMaxY.toInt() / maxPointsSize.toFloat()
 
@@ -147,7 +146,6 @@ fun LineGraph(
                 val verticalGridLines = VerticalGridLines(widthDp = 1)
                 // lines inclined towards x axis
                 drawVerticalGridLines(verticalGridLines, maxPointsSize, xItemSpacing, gridHeight)
-
                 // lines inclined towards y axis
                 drawHorizontalGridLines(horizontalGridLines, maxPointsSize, yItemSpacing, gridHeight, gridWidth)
             }

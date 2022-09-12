@@ -98,47 +98,13 @@ fun BarGraph(
                 },
         ) {
 
-            val gridHeight = size.height - paddingBottom.toPx()
-            val gridWidth = size.width - paddingRight.toPx()
-
             // maximum of the data list
             val absMaxY = GraphHelper.getAbsoluteMax(dataList)
 
-            val verticalStep = absMaxY.toInt() / dataList.size.toFloat()
-
             val yAxisLabels = YAxisLabels.fromGraphInputs(dataList)
 
-            val xItemSpacing = gridWidth / (dataList.size)
-            val yItemSpacing = gridHeight / (yAxisLabels.labels.size - 1)
 
-
-            /**
-             * Drawing Grid lines behind the graph on x and y axis
-             */
-            if (style.visibility.isGridVisible) {
-                val horizontalGridLines = HorizontalGridLines(heightDp = 5)
-                val verticalGridLines = VerticalGridLines(widthDp = 5)
-                // lines inclined towards x axis
-                drawVerticalGridLines(verticalGridLines, dataList.size + 1, xItemSpacing, gridHeight)
-                // lines inclined towards y axis
-               drawHorizontalGridLines(horizontalGridLines, dataList.size + 1, yItemSpacing, gridHeight, gridWidth)
-            }
-
-
-            /**
-             * Drawing text labels over the y- axis
-             */
-            if (style.visibility.isYAxisLabelVisible) {
-                drawYAxisLabels(yAxisLabels, yItemSpacing, gridHeight, style.colors.yAxisTextColor)
-            }
-
-            /**
-             * Drawing text labels over the x- axis
-             */
-            if (style.visibility.isXAxisLabelVisible) {
-                val drawXAxisData = xAxisData ?: XAxisLabels(dataList.mapIndexed { idx, _ -> GraphData.Number(idx + 1) })
-                drawXAxisLabels(drawXAxisData, xItemSpacing, xItemSpacing / 2, style.colors.xAxisTextColor)
-            }
+           val basicDrawer = BasicChartDrawer(this, size.width - paddingRight.toPx(), size.height - paddingBottom.toPx(),  absMaxY.toInt() / dataList.size.toFloat(),  gridWidth / (dataList.size), gridHeight / (yAxisLabels.labels.size - 1))
 
             constructGraph(
                 this,
@@ -169,6 +135,7 @@ private fun constructGraph(
     verticalStep: Float,
     barBrush: Brush?
 ) {
+    barOffsetList.clear()
     for (i in dataList.indices) {
 
         val x1 = xItemSpacing * i

@@ -22,6 +22,10 @@ import com.jaikeerthick.composable_graphs.color.Gradient1
 import com.jaikeerthick.composable_graphs.color.Gradient2
 import com.jaikeerthick.composable_graphs.color.LightGray
 import com.jaikeerthick.composable_graphs.data.GraphData
+import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.drawXAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.drawYAxisLabels
 import com.jaikeerthick.composable_graphs.helper.GraphHelper
 import com.jaikeerthick.composable_graphs.style.BarGraphStyle
 import com.jaikeerthick.composable_graphs.style.BarGraphXAxisLabelStyle
@@ -33,7 +37,7 @@ import kotlin.math.roundToInt
 @Composable
 fun BarGraph(
     dataList: List<Number>,
-    xAxisData: List<GraphData>? = null,
+    xAxisData: XAxisLabels? = null,
     header: @Composable() () -> Unit = {},
     style: BarGraphStyle = BarGraphStyle(),
     onBarClicked: (value: Any) -> Unit = {},
@@ -110,19 +114,13 @@ fun BarGraph(
 
             val verticalStep = absMaxY.toInt() / dataList.size.toFloat()
 
-            val yAxisLabelList = mutableListOf<String>()
+            val yAxisLabels = YAxisLabels.fromGraphInputs(dataList)
 
             println("max point size - $maxPointsSize")
 
 
-            for (i in 0..dataList.size) {
-                yAxisLabelList.add((verticalStep * i).roundToInt().toString())
-                println("interval - ${(absMinY + verticalStep * i)}")
-            }
-
-
             val xItemSpacing = gridWidth / (maxPointsSize - 1)
-            val yItemSpacing = gridHeight / (yAxisLabelList.size - 1)
+            val yItemSpacing = gridHeight / (yAxisLabels.labels.size - 1)
 
 
             /**
@@ -141,7 +139,7 @@ fun BarGraph(
                 }
 
                 // lines inclined towards y axis
-                for (i in 0 until yAxisLabelList.size) {
+                for (i in 0 until yAxisLabels.labels.size) {
 
                     drawLine(
                         color = Color.LightGray,
@@ -156,42 +154,18 @@ fun BarGraph(
              * Drawing text labels over the y- axis
              */
             if (style.visibility.isYAxisLabelVisible) {
-                for (i in 0 until yAxisLabelList.size) {
-
-                    drawContext.canvas.nativeCanvas.drawText(
-                        "${yAxisLabelList[i]}",
-                        size.width, //x
-                        gridHeight - yItemSpacing * (i + 0), //y
-                        Paint().apply {
-                            color = style.colors.yAxisTextColor
-                            textAlign = Paint.Align.CENTER
-                            textSize = 12.sp.toPx()
-                        }
-                    )
-                }
+                drawYAxisLabels(yAxisLabels, yItemSpacing, gridHeight, style.colors.yAxisTextColor)
             }
 
             /**
              * Drawing text labels over the x- axis
              */
             if (style.visibility.isXAxisLabelVisible) {
-                val xLabelOffset: Float = if (style.xAxisLabelStyle == BarGraphXAxisLabelStyle.CENTERED) xItemSpacing / 2 else 0f
-                val drawXAxisData: MutableList<GraphData> = xAxisData?.toMutableList() ?: dataList.mapIndexed {idx, _ -> GraphData.Number(idx)}.toMutableList()
-                if (style.xAxisLabelStyle == BarGraphXAxisLabelStyle.FROM_TO && xAxisData == null) drawXAxisData.add(GraphData.Number(drawXAxisData.size))
-                val xLabelCount =  if (style.xAxisLabelStyle == BarGraphXAxisLabelStyle.FROM_TO) maxPointsSize else maxPointsSize - 1
-                for (i in 0 until xLabelCount) {
 
-                    drawContext.canvas.nativeCanvas.drawText(
-                        drawXAxisData[i].text,
-                        (xItemSpacing * (i)) + xLabelOffset, // x
-                        size.height, // y
-                        Paint().apply {
-                            color = style.colors.xAxisTextColor
-                            textAlign = Paint.Align.CENTER
-                            textSize = 12.sp.toPx()
-                        }
-                    )
-                }
+                val drawXAxisData = xAxisData ?: XAxisLabels(dataList.mapIndexed { idx, _ -> GraphData.Number(idx + 1) })
+
+                drawXAxisLabels(drawXAxisData, xItemSpacing, xItemSpacing / 2, style.colors.xAxisTextColor)
+
             }
 
             backgroundHighlights?.forEach { backgroundHighlight -> this.drawBackgroundHighlight(

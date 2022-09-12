@@ -22,6 +22,7 @@ import com.jaikeerthick.composable_graphs.composables.BackgroundHighlight
 import com.jaikeerthick.composable_graphs.composables.BarGraph
 import com.jaikeerthick.composable_graphs.composables.LineGraph
 import com.jaikeerthick.composable_graphs.data.GraphData
+import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.style.BarGraphStyle
 import com.jaikeerthick.composable_graphs.style.BarGraphVisibility
 import com.jaikeerthick.composable_graphs.style.BarGraphXAxisLabelStyle
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() {
                 val style = BarGraphStyle(
                     visibility = BarGraphVisibility(
                         isYAxisLabelVisible = true,
+                        isGridVisible = true
 
                     ),
                     xAxisLabelStyle = BarGraphXAxisLabelStyle.CENTERED
@@ -46,7 +48,7 @@ class MainActivity : ComponentActivity() {
                 val style2 = LineGraphStyle(
                     visibility = LinearGraphVisibility(
                         isHeaderVisible = true,
-                        isYAxisLabelVisible = false,
+                        isYAxisLabelVisible = true,
                         isCrossHairVisible = true
                     ),
                     colors = LinearGraphColors(
@@ -72,9 +74,9 @@ class MainActivity : ComponentActivity() {
                         val clickedValue: MutableState<Pair<Any,Any>?> = remember{ mutableStateOf(null) }
 
                         LineGraph(
-                            xAxisData = listOf("Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun").map {
+                            xAxisData = XAxisLabels(listOf("Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat").map {
                                 GraphData.String(it)
-                            },
+                            }),
                             yAxisData = listOf(200, 40, 60, 450, 700, 30, 50),
                             style = style2,
                             onPointClicked = {
@@ -99,10 +101,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     BarGraph(
-                        dataList = listOf(10, 23, 50, 12, 31) ,
-                        xAxisData = listOf("Mon", "Tues", "Wed", "Thur", "Fri", "Sat").map {
-                            GraphData.String(it)
-                        },
+                        dataList = listOf(10, 23, 50, 12, 66) ,
                         style = style,
                         backgroundHighlights = listOf(BackgroundHighlight(10f, 25f, Color.Blue.copy(0.2f)), BackgroundHighlight(28f, 40f, Color.Yellow.copy(0.4f)))
                     )

@@ -17,6 +17,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.data.GraphData
+import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.drawXAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.drawYAxisLabels
 import com.jaikeerthick.composable_graphs.helper.GraphHelper
 import com.jaikeerthick.composable_graphs.style.LineGraphStyle
 import kotlin.math.pow
@@ -25,7 +29,7 @@ import kotlin.math.sqrt
 
 @Composable
 fun LineGraph(
-    xAxisData: List<GraphData>,
+    xAxisData: XAxisLabels? = null,
     yAxisData: List<Number>,
     header: @Composable() () -> Unit = {},
     style: LineGraphStyle = LineGraphStyle(),
@@ -55,6 +59,8 @@ fun LineGraph(
         if (style.visibility.isHeaderVisible){
             header()
         }
+
+        val presentXAxisLabels: XAxisLabels = xAxisData ?: XAxisLabels(yAxisData.mapIndexed {idx, _ -> GraphData.Number(idx + 1)})
 
         Canvas(
             modifier = Modifier
@@ -90,7 +96,7 @@ fun LineGraph(
 
                             //
                             val index = offsetList.indexOf(it)
-                            onPointClicked(Pair(xAxisData[index].text, yAxisData[index]))
+                            onPointClicked(Pair(presentXAxisLabels.labels[index].text, yAxisData[index]))
                         }
 
                     }
@@ -110,7 +116,7 @@ fun LineGraph(
             val gridWidth = size.width - paddingRight.toPx()
 
             // the maximum points for x and y axis to plot (maintain uniformity)
-            val maxPointsSize: Int = minOf(xAxisData.size, yAxisData.size)
+            val maxPointsSize: Int = minOf(presentXAxisLabels.labels.size, yAxisData.size)
 
             // maximum of the y data list
             val absMaxY = GraphHelper.getAbsoluteMax(yAxisData)
@@ -118,18 +124,14 @@ fun LineGraph(
 
             val verticalStep = absMaxY.toInt() / maxPointsSize.toFloat()
 
-            // generate y axis label
-            val yAxisLabelList = mutableListOf<String>()
+            // if there is less x labels than points, take less points
+            val uniformInputs = yAxisData.take(maxPointsSize)
 
-            for (i in 0..maxPointsSize) {
-                val intervalValue = (verticalStep*i).roundToInt()
-                println("interval - $intervalValue")
-                yAxisLabelList.add(intervalValue.toString())
-            }
+           val yAxisLabels = YAxisLabels.fromGraphInputs(uniformInputs)
 
 
             val xItemSpacing = gridWidth / (maxPointsSize - 1)
-            val yItemSpacing = gridHeight / (yAxisLabelList.size - 1)
+            val yItemSpacing = gridHeight / (yAxisLabels.labels.size - 1)
 
 
 
@@ -147,7 +149,7 @@ fun LineGraph(
                     )
                 }
 
-                for (i in 0 until yAxisLabelList.size){
+                for (i in 0 until yAxisLabels.labels.size){
                     // lines inclined towards y axis
                     drawLine(
                         color = Color.LightGray,
@@ -161,37 +163,14 @@ fun LineGraph(
              * Drawing text labels over the x- axis
              */
             if (style.visibility.isXAxisLabelVisible) {
-                for (i in 0 until maxPointsSize) {
-
-                    drawContext.canvas.nativeCanvas.drawText(
-                        "${xAxisData[i].text}",
-                        xItemSpacing * (i), // x
-                        size.height, // y
-                        Paint().apply {
-                            color = android.graphics.Color.GRAY
-                            textAlign = Paint.Align.CENTER
-                            textSize = 12.sp.toPx()
-                        }
-                    )
-                }
+                drawXAxisLabels(labels = presentXAxisLabels, xItemSpacing, 0f, style.colors.xAxisTextColor)
             }
 
             /**
              * Drawing text labels over the y- axis
              */
             if (style.visibility.isYAxisLabelVisible) {
-                for (i in 0 until yAxisLabelList.size) {
-                    drawContext.canvas.nativeCanvas.drawText(
-                        "${yAxisLabelList[i]}",
-                        size.width, //x
-                        gridHeight - yItemSpacing * (i + 0), //y
-                        Paint().apply {
-                            color = android.graphics.Color.GRAY
-                            textAlign = Paint.Align.CENTER
-                            textSize = 12.sp.toPx()
-                        }
-                    )
-                }
+               drawYAxisLabels(yAxisLabels, yItemSpacing, gridHeight, style.colors.yAxisTextColor)
             }
 
 

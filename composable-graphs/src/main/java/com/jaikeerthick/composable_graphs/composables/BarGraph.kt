@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -36,6 +37,7 @@ fun BarGraph(
     header: @Composable() () -> Unit = {},
     style: BarGraphStyle = BarGraphStyle(),
     onBarClicked: (value: Any) -> Unit = {},
+    backgroundHighlights: List<BackgroundHighlight>? = null
 ) {
 
     val paddingRight: Dp = if (style.visibility.isYAxisLabelVisible) 20.dp else 0.dp
@@ -92,6 +94,8 @@ fun BarGraph(
 
                 },
         ) {
+
+//            this.drawIntoCanvas { it.nativeCanvas. }
 
 
             val gridHeight = (size.height) - paddingBottom.toPx()
@@ -188,6 +192,17 @@ fun BarGraph(
                         }
                     )
                 }
+            }
+
+            backgroundHighlights?.forEach { backgroundHighlight ->
+
+                backgroundHighlight.verticalStep = verticalStep
+                backgroundHighlight.gridHeight = gridHeight
+                backgroundHighlight.gridWidth = gridWidth
+                backgroundHighlight.yItemSpacing = yItemSpacing
+
+               backgroundHighlight.drawToCanvas(this)
+//
             }
 
 

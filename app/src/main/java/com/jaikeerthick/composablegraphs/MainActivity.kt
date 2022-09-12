@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.MutableState
@@ -16,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.color.*
+import com.jaikeerthick.composable_graphs.composables.BackgroundHighlight
 import com.jaikeerthick.composable_graphs.composables.BarGraph
 import com.jaikeerthick.composable_graphs.composables.LineGraph
 import com.jaikeerthick.composable_graphs.data.GraphData
@@ -24,6 +27,7 @@ import com.jaikeerthick.composable_graphs.style.BarGraphVisibility
 import com.jaikeerthick.composable_graphs.style.BarGraphXAxisLabelStyle
 import com.jaikeerthick.composable_graphs.style.LineGraphStyle
 import com.jaikeerthick.composable_graphs.style.LinearGraphVisibility
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +62,7 @@ class MainActivity : ComponentActivity() {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
                         .background(color = Color.White),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
@@ -94,24 +99,12 @@ class MainActivity : ComponentActivity() {
                     }
 
                     BarGraph(
-                        dataList = listOf(20, 30, 10, 60, 5),
+                        dataList = listOf(10, 23, 50, 12, 31) ,
                         xAxisData = listOf("Mon", "Tues", "Wed", "Thur", "Fri", "Sat").map {
                             GraphData.String(it)
                         },
-                        header = {
-                            Column {
-                                Text(
-                                    text = "This is Bar Graph",
-                                    color = GraphAccent,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                                Text(
-                                    text = "With custom Header",
-                                    color = Color.Gray
-                                )
-                            }
-                        },
-                        style = style
+                        style = style,
+                        backgroundHighlights = listOf(BackgroundHighlight(10f, 25f, Color.Blue.copy(0.2f)), BackgroundHighlight(28f, 40f, Color.Yellow.copy(0.4f)))
                     )
 
 

@@ -6,30 +6,17 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 
-class BackgroundHighlight (
+data class BackgroundHighlight (
     val yStart: Float,
     val yEnd: Float,
     val color: Color,
-): CanvasDrawable {
+) {
+}
 
-    var verticalStep = 0f
-    var gridHeight = 0f
-    var yItemSpacing = 0f
-    var gridWidth = 0f
-//    var yItemSpacing = 0f
-
-    override fun drawToCanvas(scope: DrawScope) {
-
-        scope.drawRect(
-            color = color,
-            topLeft = Offset(0f, gridHeight - (yItemSpacing * (yEnd) / verticalStep)),
-            size = Size(gridWidth,  (yItemSpacing * (yEnd - yStart) / verticalStep))
-        )
-
-//        scope.drawRect(
-//            color = color,
-//            topLeft = Offset(0f, 0f),
-//            size = Size(gridWidth, gridHeight)
-//        )
-    }
+fun DrawScope.drawBackgroundHighlight(highlight: BackgroundHighlight, verticalStep: Float, yItemSpacing: Float, gridWidth: Float, gridHeight: Float) {
+    drawRect(
+        color = highlight.color,
+        topLeft = Offset(0f, gridHeight - (yItemSpacing * (highlight.yEnd) / verticalStep)),
+        size = Size(gridWidth,  (yItemSpacing * (highlight.yEnd - highlight.yStart) / verticalStep))
+    )
 }

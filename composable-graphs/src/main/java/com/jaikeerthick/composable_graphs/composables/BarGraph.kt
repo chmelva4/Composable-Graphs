@@ -194,16 +194,9 @@ fun BarGraph(
                 }
             }
 
-            backgroundHighlights?.forEach { backgroundHighlight ->
-
-                backgroundHighlight.verticalStep = verticalStep
-                backgroundHighlight.gridHeight = gridHeight
-                backgroundHighlight.gridWidth = gridWidth
-                backgroundHighlight.yItemSpacing = yItemSpacing
-
-               backgroundHighlight.drawToCanvas(this)
-//
-            }
+            backgroundHighlights?.forEach { backgroundHighlight -> this.drawBackgroundHighlight(
+                backgroundHighlight, verticalStep, yItemSpacing, gridWidth, gridHeight
+            ) }
 
 
             /**

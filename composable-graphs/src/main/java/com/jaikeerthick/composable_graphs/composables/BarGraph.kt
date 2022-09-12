@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -48,11 +49,8 @@ fun BarGraph(
     val paddingRight: Dp = if (style.visibility.isYAxisLabelVisible) 20.dp else 0.dp
     val paddingBottom: Dp = if (style.visibility.isXAxisLabelVisible) 20.dp else 0.dp
 
-    val offsetList = remember { mutableListOf<Offset>() }
 
     val barOffsetList = remember { mutableListOf<Pair<Offset, Offset>>() }
-
-    //val isBarClicked = remember { mutableStateOf(false) }
     val clickedBar: MutableState<Offset?> = remember { mutableStateOf(null) }
 
     Column(
@@ -100,27 +98,17 @@ fun BarGraph(
                 },
         ) {
 
-//            this.drawIntoCanvas { it.nativeCanvas. }
-
-
-            val gridHeight = (size.height) - paddingBottom.toPx()
+            val gridHeight = size.height - paddingBottom.toPx()
             val gridWidth = size.width - paddingRight.toPx()
-
-            val maxPointsSize = dataList.size + 1
 
             // maximum of the data list
             val absMaxY = GraphHelper.getAbsoluteMax(dataList)
-            val absMinY = 0
-            println("max - $absMaxY, Min - $absMinY")
 
             val verticalStep = absMaxY.toInt() / dataList.size.toFloat()
 
             val yAxisLabels = YAxisLabels.fromGraphInputs(dataList)
 
-            println("max point size - $maxPointsSize")
-
-
-            val xItemSpacing = gridWidth / (maxPointsSize - 1)
+            val xItemSpacing = gridWidth / (dataList.size)
             val yItemSpacing = gridHeight / (yAxisLabels.labels.size - 1)
 
 
@@ -128,14 +116,12 @@ fun BarGraph(
              * Drawing Grid lines behind the graph on x and y axis
              */
             if (style.visibility.isGridVisible) {
-
                 val horizontalGridLines = HorizontalGridLines(heightDp = 5)
                 val verticalGridLines = VerticalGridLines(widthDp = 5)
                 // lines inclined towards x axis
-                drawVerticalGridLines(verticalGridLines, maxPointsSize, xItemSpacing, gridHeight)
-
+                drawVerticalGridLines(verticalGridLines, dataList.size + 1, xItemSpacing, gridHeight)
                 // lines inclined towards y axis
-               drawHorizontalGridLines(horizontalGridLines, maxPointsSize, yItemSpacing, gridHeight, gridWidth)
+               drawHorizontalGridLines(horizontalGridLines, dataList.size + 1, yItemSpacing, gridHeight, gridWidth)
             }
 
 
@@ -150,82 +136,94 @@ fun BarGraph(
              * Drawing text labels over the x- axis
              */
             if (style.visibility.isXAxisLabelVisible) {
-
                 val drawXAxisData = xAxisData ?: XAxisLabels(dataList.mapIndexed { idx, _ -> GraphData.Number(idx + 1) })
-
                 drawXAxisLabels(drawXAxisData, xItemSpacing, xItemSpacing / 2, style.colors.xAxisTextColor)
-
             }
 
-            backgroundHighlights?.forEach { backgroundHighlight -> this.drawBackgroundHighlight(
-                backgroundHighlight, verticalStep, yItemSpacing, gridWidth, gridHeight
-            ) }
+            constructGraph(
+                this,
+                dataList,
+                barOffsetList,
+                gridHeight,
+                xItemSpacing,
+                yItemSpacing,
+                verticalStep,
+                style.colors.fillGradient
+            )
 
-
-            /**
-             * Calculating Offsets, add those into offsetList
-             * Draw Rectangle using calculated values
-             */
-            offsetList.clear()
-
-            //println("max points size - $maxPointsSize")
-            for (i in 0 until maxPointsSize - 1) {
-
-                val x1 = xItemSpacing * i
-                //val x2 = xItemSpacing * (i + 1)
-                val y1 =
-                    gridHeight - (yItemSpacing * (dataList[i].toFloat() / verticalStep))
-
-
-                barOffsetList.add(
-                    Pair(
-                        first = Offset(
-                            x = x1,
-                            y = y1
-                        ),
-                        second = Offset(
-                            x = (xItemSpacing * (i + 1)),
-                            y = y1
-                        ),
-                    )
-                )
-
-                drawRect(
-                    brush = style.colors.fillGradient ?: Brush.verticalGradient(
-                        listOf(Gradient1, Gradient2)
-                    ),
-                    topLeft = Offset(
-                        x = x1,
-                        y = y1
-                    ),
-                    size = Size(
-                        width = xItemSpacing,
-                        height = gridHeight - y1
-                    )
-                )
-
-            }
-
-            // click action
-            clickedBar.value?.let{
-
-                drawRect(
-                    color = style.colors.clickHighlightColor,
-                    topLeft = Offset(
-                        x = it.x,
-                        y = it.y
-                    ),
-                    size = Size(
-                        width = xItemSpacing,
-                        height = gridHeight - it.y
-                    )
-                )
-
-            }
-
+            drawClickedRect(this, clickedBar, style.colors.clickHighlightColor, xItemSpacing, gridHeight)
         }
 
     }
 
 
 }
+
+private fun constructGraph(
+    scope: DrawScope,
+    dataList: List<Number>,
+    barOffsetList: MutableList<Pair<Offset, Offset>>,
+    gridHeight: Float,
+    xItemSpacing: Float,
+    yItemSpacing: Float,
+    verticalStep: Float,
+    barBrush: Brush?
+) {
+    for (i in dataList.indices) {
+
+        val x1 = xItemSpacing * i
+        val y1 =
+            gridHeight - (yItemSpacing * (dataList[i].toFloat() / verticalStep))
+
+        barOffsetList.add(
+            Pair(
+                first = Offset(
+                    x = x1,
+                    y = y1
+                ),
+                second = Offset(
+                    x = (xItemSpacing * (i + 1)),
+                    y = y1
+                ),
+            )
+        )
+
+        scope.drawRect(
+            brush = barBrush ?: Brush.verticalGradient(
+                listOf(Gradient1, Gradient2)
+            ),
+            topLeft = Offset(
+                x = x1,
+                y = y1
+            ),
+            size = Size(
+                width = xItemSpacing,
+                height = gridHeight - y1
+            )
+        )
+
+    }
+}
+
+private fun drawClickedRect(
+    scope: DrawScope, clickedBar: MutableState<Offset?>, highlightColor: Color, xItemSpacing: Float, gridHeight: Float
+) {
+    // click action
+    clickedBar.value?.let{
+
+        scope.drawRect(
+            color = highlightColor,
+            topLeft = Offset(
+                x = it.x,
+                y = it.y
+            ),
+            size = Size(
+                width = xItemSpacing,
+                height = gridHeight - it.y
+            )
+        )
+
+    }
+}
+
+

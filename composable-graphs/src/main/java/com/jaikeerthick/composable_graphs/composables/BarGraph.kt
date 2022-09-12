@@ -172,10 +172,12 @@ fun BarGraph(
              */
             if (style.visibility.isXAxisLabelVisible) {
                 val xLabelOffset: Float = if (style.xAxisLabelStyle == BarGraphXAxisLabelStyle.CENTERED) xItemSpacing / 2 else 0f
+                val drawXAxisData: MutableList<GraphData> = xAxisData?.toMutableList() ?: dataList.mapIndexed {idx, _ -> GraphData.Number(idx)}.toMutableList()
+                if (style.xAxisLabelStyle == BarGraphXAxisLabelStyle.FROM_TO && xAxisData == null) drawXAxisData.add(GraphData.Number(drawXAxisData.size))
                 for (i in 0 until maxPointsSize) {
 
                     drawContext.canvas.nativeCanvas.drawText(
-                        "$i",
+                        drawXAxisData[i].text,
                         (xItemSpacing * (i)) + xLabelOffset, // x
                         size.height, // y
                         Paint().apply {

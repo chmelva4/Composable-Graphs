@@ -21,6 +21,7 @@ import com.jaikeerthick.composable_graphs.composables.LineGraph
 import com.jaikeerthick.composable_graphs.data.GraphData
 import com.jaikeerthick.composable_graphs.style.BarGraphStyle
 import com.jaikeerthick.composable_graphs.style.BarGraphVisibility
+import com.jaikeerthick.composable_graphs.style.BarGraphXAxisLabelStyle
 import com.jaikeerthick.composable_graphs.style.LineGraphStyle
 import com.jaikeerthick.composable_graphs.style.LinearGraphVisibility
 
@@ -33,8 +34,10 @@ class MainActivity : ComponentActivity() {
 
                 val style = BarGraphStyle(
                     visibility = BarGraphVisibility(
-                        isYAxisLabelVisible = true
-                    )
+                        isYAxisLabelVisible = true,
+
+                    ),
+                    xAxisLabelStyle = BarGraphXAxisLabelStyle.FROM_TO
                 )
                 val style2 = LineGraphStyle(
                     visibility = LinearGraphVisibility(
@@ -91,7 +94,10 @@ class MainActivity : ComponentActivity() {
                     }
 
                     BarGraph(
-                        dataList = listOf(20, 30, 10, 60, 35),
+                        dataList = listOf(20, 30, 10, 60),
+                        xAxisData = listOf("Mon", "Tues", "Wed", "Thur", "Fri",).map {
+                            GraphData.String(it)
+                        },
                         header = {
                             Column {
                                 Text(

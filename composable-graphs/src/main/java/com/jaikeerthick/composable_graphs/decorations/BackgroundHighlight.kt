@@ -1,4 +1,4 @@
-package com.jaikeerthick.composable_graphs.composables
+package com.jaikeerthick.composable_graphs.decorations
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset

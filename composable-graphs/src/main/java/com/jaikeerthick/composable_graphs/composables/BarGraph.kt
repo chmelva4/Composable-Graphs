@@ -97,7 +97,7 @@ fun BarGraph(
             val gridHeight = (size.height) - paddingBottom.toPx()
             val gridWidth = size.width - paddingRight.toPx()
 
-            val maxPointsSize = if (style.xAxisLabelStyle == BarGraphXAxisLabelStyle.FROM_TO) dataList.size + 1 else dataList.size
+            val maxPointsSize = dataList.size + 1
 
             // maximum of the data list
             val absMaxY = GraphHelper.getAbsoluteMax(dataList)
@@ -174,7 +174,8 @@ fun BarGraph(
                 val xLabelOffset: Float = if (style.xAxisLabelStyle == BarGraphXAxisLabelStyle.CENTERED) xItemSpacing / 2 else 0f
                 val drawXAxisData: MutableList<GraphData> = xAxisData?.toMutableList() ?: dataList.mapIndexed {idx, _ -> GraphData.Number(idx)}.toMutableList()
                 if (style.xAxisLabelStyle == BarGraphXAxisLabelStyle.FROM_TO && xAxisData == null) drawXAxisData.add(GraphData.Number(drawXAxisData.size))
-                for (i in 0 until maxPointsSize) {
+                val xLabelCount =  if (style.xAxisLabelStyle == BarGraphXAxisLabelStyle.FROM_TO) maxPointsSize else maxPointsSize - 1
+                for (i in 0 until xLabelCount) {
 
                     drawContext.canvas.nativeCanvas.drawText(
                         drawXAxisData[i].text,

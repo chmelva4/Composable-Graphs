@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                         isYAxisLabelVisible = true,
 
                     ),
-                    xAxisLabelStyle = BarGraphXAxisLabelStyle.FROM_TO
+                    xAxisLabelStyle = BarGraphXAxisLabelStyle.CENTERED
                 )
                 val style2 = LineGraphStyle(
                     visibility = LinearGraphVisibility(
@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
                         val clickedValue: MutableState<Pair<Any,Any>?> = remember{ mutableStateOf(null) }
 
                         LineGraph(
-                            xAxisData = listOf("Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat").map {
+                            xAxisData = listOf("Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun").map {
                                 GraphData.String(it)
                             },
                             yAxisData = listOf(200, 40, 60, 450, 700, 30, 50),
@@ -94,8 +94,8 @@ class MainActivity : ComponentActivity() {
                     }
 
                     BarGraph(
-                        dataList = listOf(20, 30, 10, 60),
-                        xAxisData = listOf("Mon", "Tues", "Wed", "Thur", "Fri",).map {
+                        dataList = listOf(20, 30, 10, 60, 5),
+                        xAxisData = listOf("Mon", "Tues", "Wed", "Thur", "Fri", "Sat").map {
                             GraphData.String(it)
                         },
                         header = {

@@ -17,8 +17,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.data.GraphData
+import com.jaikeerthick.composable_graphs.decorations.HorizontalGridLines
+import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.drawHorizontalGridLines
+import com.jaikeerthick.composable_graphs.decorations.drawVerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.drawXAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.drawYAxisLabels
 import com.jaikeerthick.composable_graphs.helper.GraphHelper
@@ -139,24 +143,13 @@ fun LineGraph(
              * Drawing Grid lines inclined towards x axis
              */
             if (style.visibility.isGridVisible) {
-                for (i in 0 until maxPointsSize) {
+                val horizontalGridLines = HorizontalGridLines(heightDp = 1)
+                val verticalGridLines = VerticalGridLines(widthDp = 1)
+                // lines inclined towards x axis
+                drawVerticalGridLines(verticalGridLines, maxPointsSize, xItemSpacing, gridHeight)
 
-                    // lines inclined towards x axis
-                    drawLine(
-                        color = Color.LightGray,
-                        start = Offset(xItemSpacing * (i), 0f),
-                        end = Offset(xItemSpacing * (i), gridHeight),
-                    )
-                }
-
-                for (i in 0 until yAxisLabels.labels.size){
-                    // lines inclined towards y axis
-                    drawLine(
-                        color = Color.LightGray,
-                        start = Offset(0f, gridHeight - yItemSpacing * (i)),
-                        end = Offset(gridWidth, gridHeight - yItemSpacing * (i)),
-                    )
-                }
+                // lines inclined towards y axis
+                drawHorizontalGridLines(horizontalGridLines, maxPointsSize, yItemSpacing, gridHeight, gridWidth)
             }
 
             /**

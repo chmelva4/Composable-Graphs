@@ -18,10 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.color.*
-import com.jaikeerthick.composable_graphs.composables.BackgroundHighlight
 import com.jaikeerthick.composable_graphs.composables.BarGraph
 import com.jaikeerthick.composable_graphs.composables.LineGraph
 import com.jaikeerthick.composable_graphs.data.GraphData
+import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.style.BarGraphStyle
 import com.jaikeerthick.composable_graphs.style.BarGraphVisibility
@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
                 val style2 = LineGraphStyle(
                     visibility = LinearGraphVisibility(
                         isHeaderVisible = true,
+                        isGridVisible = true,
                         isYAxisLabelVisible = true,
                         isCrossHairVisible = true
                     ),

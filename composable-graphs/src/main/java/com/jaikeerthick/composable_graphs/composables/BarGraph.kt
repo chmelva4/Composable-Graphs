@@ -1,6 +1,5 @@
 package com.jaikeerthick.composable_graphs.composables
 
-import android.graphics.Paint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -13,23 +12,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.color.Gradient1
 import com.jaikeerthick.composable_graphs.color.Gradient2
 import com.jaikeerthick.composable_graphs.color.LightGray
 import com.jaikeerthick.composable_graphs.data.GraphData
+import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
+import com.jaikeerthick.composable_graphs.decorations.HorizontalGridLines
+import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.drawBackgroundHighlight
+import com.jaikeerthick.composable_graphs.decorations.drawHorizontalGridLines
+import com.jaikeerthick.composable_graphs.decorations.drawVerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.drawXAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.drawYAxisLabels
 import com.jaikeerthick.composable_graphs.helper.GraphHelper
 import com.jaikeerthick.composable_graphs.style.BarGraphStyle
-import com.jaikeerthick.composable_graphs.style.BarGraphXAxisLabelStyle
-import kotlin.math.roundToInt
 
 /**
  * A minimal and stunning Graph
@@ -127,26 +128,14 @@ fun BarGraph(
              * Drawing Grid lines behind the graph on x and y axis
              */
             if (style.visibility.isGridVisible) {
-                // lines inclined towards x axis
-                for (i in 0 until maxPointsSize) {
 
-                    drawLine(
-                        color = LightGray,
-                        start = Offset(xItemSpacing * (i), 0f),
-                        end = Offset(xItemSpacing * (i), gridHeight),
-                        strokeWidth = 2.dp.toPx()
-                    )
-                }
+                val horizontalGridLines = HorizontalGridLines(heightDp = 5)
+                val verticalGridLines = VerticalGridLines(widthDp = 5)
+                // lines inclined towards x axis
+                drawVerticalGridLines(verticalGridLines, maxPointsSize, xItemSpacing, gridHeight)
 
                 // lines inclined towards y axis
-                for (i in 0 until yAxisLabels.labels.size) {
-
-                    drawLine(
-                        color = Color.LightGray,
-                        start = Offset(0f, gridHeight - yItemSpacing * (i + 0)),
-                        end = Offset(gridWidth, (gridHeight) - yItemSpacing * (i + 0)),
-                    )
-                }
+               drawHorizontalGridLines(horizontalGridLines, maxPointsSize, yItemSpacing, gridHeight, gridWidth)
             }
 
 

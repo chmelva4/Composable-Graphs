@@ -21,6 +21,7 @@ import com.jaikeerthick.composable_graphs.color.Gradient2
 import com.jaikeerthick.composable_graphs.color.LightGray
 import com.jaikeerthick.composable_graphs.data.GraphData
 import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
+import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.HorizontalGridLines
 import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
@@ -42,8 +43,8 @@ fun BarGraph(
     xAxisData: XAxisLabels? = null,
     header: @Composable() () -> Unit = {},
     style: BarGraphStyle = BarGraphStyle(),
+    decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
     onBarClicked: (value: Any) -> Unit = {},
-    backgroundHighlights: List<BackgroundHighlight>? = null
 ) {
 
     val paddingRight: Dp = if (style.visibility.isYAxisLabelVisible) 20.dp else 0.dp
@@ -91,33 +92,34 @@ fun BarGraph(
 
                             clickedBar.value = it.first
                         }
-
-
                     }
 
                 },
         ) {
-
-            // maximum of the data list
-            val absMaxY = GraphHelper.getAbsoluteMax(dataList)
-
             val yAxisLabels = YAxisLabels.fromGraphInputs(dataList)
+            val basicDrawer = BasicChartDrawer(
+                this, size.width - paddingRight.toPx(), size.height - paddingBottom.toPx(), yAxisLabels, dataList
+            )
 
+            val presentXAxisData = xAxisData ?: XAxisLabels.createDefault(dataList)
+            presentXAxisData.drawToCanvas(basicDrawer)
 
-           val basicDrawer = BasicChartDrawer(this, size.width - paddingRight.toPx(), size.height - paddingBottom.toPx(),  absMaxY.toInt() / dataList.size.toFloat(),  gridWidth / (dataList.size), gridHeight / (yAxisLabels.labels.size - 1))
+            yAxisLabels.drawToCanvas(basicDrawer)
+
+            decorations.forEach { it.drawToCanvas(basicDrawer) }
 
             constructGraph(
                 this,
                 dataList,
                 barOffsetList,
-                gridHeight,
-                xItemSpacing,
-                yItemSpacing,
-                verticalStep,
+                basicDrawer.gridHeight,
+                basicDrawer.xItemSpacing,
+                basicDrawer.yItemSpacing,
+                basicDrawer.verticalStep,
                 style.colors.fillGradient
             )
 
-            drawClickedRect(this, clickedBar, style.colors.clickHighlightColor, xItemSpacing, gridHeight)
+            drawClickedRect(this, clickedBar, style.colors.clickHighlightColor, basicDrawer.xItemSpacing, basicDrawer.gridHeight)
         }
 
     }

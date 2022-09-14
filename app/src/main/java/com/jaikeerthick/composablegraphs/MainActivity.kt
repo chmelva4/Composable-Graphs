@@ -104,7 +104,6 @@ class MainActivity : ComponentActivity() {
                     BarGraph(
                         dataList = listOf(10, 23, 50, 12, 66) ,
                         style = style,
-//                        backgroundHighlights = listOf(BackgroundHighlight(10f, 25f, Color.Blue.copy(0.2f)), BackgroundHighlight(28f, 40f, Color.Yellow.copy(0.4f)))
                     )
 
 

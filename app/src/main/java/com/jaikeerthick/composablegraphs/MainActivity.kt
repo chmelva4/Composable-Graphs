@@ -23,6 +23,7 @@ import com.jaikeerthick.composable_graphs.composables.LineGraph
 import com.jaikeerthick.composable_graphs.data.GraphData
 import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
 import com.jaikeerthick.composable_graphs.decorations.HorizontalGridLines
+import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.style.BarGraphStyle
 import com.jaikeerthick.composable_graphs.style.BarGraphVisibility
@@ -81,6 +82,7 @@ class MainActivity : ComponentActivity() {
                             }),
                             yAxisData = listOf(200, 40, 60, 450, 700, 30, 50),
                             style = style2,
+                            decorations = listOf(VerticalGridLines(), HorizontalGridLines()),
                             onPointClicked = {
                                 clickedValue.value = it
                             }

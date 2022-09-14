@@ -11,19 +11,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.jaikeerthick.composable_graphs.data.GraphData
-import com.jaikeerthick.composable_graphs.decorations.HorizontalGridLines
-import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
+import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
-import com.jaikeerthick.composable_graphs.decorations.drawHorizontalGridLines
-import com.jaikeerthick.composable_graphs.decorations.drawVerticalGridLines
-import com.jaikeerthick.composable_graphs.decorations.drawXAxisLabels
-import com.jaikeerthick.composable_graphs.decorations.drawYAxisLabels
-import com.jaikeerthick.composable_graphs.helper.GraphHelper
 import com.jaikeerthick.composable_graphs.style.LineGraphStyle
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -34,6 +28,7 @@ fun LineGraph(
     yAxisData: List<Number>,
     header: @Composable() () -> Unit = {},
     style: LineGraphStyle = LineGraphStyle(),
+    decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
     onPointClicked: (pair: Pair<Any,Any>) -> Unit = {},
 ) {
 
@@ -43,6 +38,8 @@ fun LineGraph(
     val offsetList = remember{ mutableListOf<Offset>() }
     val isPointClicked = remember { mutableStateOf(false) }
     val clickedPoint: MutableState<Offset?> = remember { mutableStateOf(null) }
+    val presentXAxisLabels: XAxisLabels = xAxisData ?: XAxisLabels.createDefault(yAxisData)
+
 
 
     Column(
@@ -61,7 +58,6 @@ fun LineGraph(
             header()
         }
 
-        val presentXAxisLabels: XAxisLabels = xAxisData ?: XAxisLabels(yAxisData.mapIndexed {idx, _ -> GraphData.Number(idx + 1)})
 
         Canvas(
             modifier = Modifier
@@ -113,153 +109,178 @@ fun LineGraph(
              *               ~~~~~~~~~~~~~ => padding saved for the end of the axis
              */
 
-            val gridHeight = (size.height) - paddingBottom.toPx()
-            val gridWidth = size.width - paddingRight.toPx()
+            // XAxis labels handled at the top as they are needed for clicks
+            val yAxisLabels = YAxisLabels.fromGraphInputs(yAxisData)
+            val basicDrawer = BasicChartDrawer(
+                this,
+                size.width - paddingRight.toPx(),
+                size.height - paddingBottom.toPx(),
+                yAxisLabels,
+                yAxisData,
+                presentXAxisLabels.labels.size,
+                0f
+            )
 
-            // the maximum points for x and y axis to plot (maintain uniformity)
-            val maxPointsSize: Int = minOf(presentXAxisLabels.labels.size, yAxisData.size)
+            presentXAxisLabels.drawToCanvas(basicDrawer)
+            yAxisLabels.drawToCanvas(basicDrawer)
 
-            // maximum of the y data list
-            val absMaxY = GraphHelper.getAbsoluteMax(yAxisData)
+            decorations.forEach { it.drawToCanvas(basicDrawer) }
 
-            val verticalStep = absMaxY.toInt() / maxPointsSize.toFloat()
+            constructOffsetListAndDrawPoints(
+            this,
+                offsetList,
+                yAxisData,
+                basicDrawer.xItemSpacing,
+                basicDrawer.yItemSpacing,
+                basicDrawer.verticalStep,
+                basicDrawer.gridHeight,
+                style.colors.pointColor,
+                5.dp.toPx()
+            )
 
-            // if there is less x labels than points, take less points
-            val uniformInputs = yAxisData.take(maxPointsSize)
+            paintGradientUnderTheGraphLine(
+                this, offsetList, yAxisData, basicDrawer.gridHeight, basicDrawer.xItemSpacing, style.colors.fillGradient
+            )
 
-           val yAxisLabels = YAxisLabels.fromGraphInputs(uniformInputs)
+            drawLineConnectingPoints(this, offsetList, style.colors.lineColor, 2.dp.toPx())
 
-
-            val xItemSpacing = gridWidth / (maxPointsSize - 1)
-            val yItemSpacing = gridHeight / (yAxisLabels.labels.size - 1)
-
-
-
-            /**
-             * Drawing Grid lines inclined towards x axis
-             */
-            if (style.visibility.isGridVisible) {
-                val horizontalGridLines = HorizontalGridLines(heightPx = 1)
-                val verticalGridLines = VerticalGridLines(widthPx = 1)
-                // lines inclined towards x axis
-                drawVerticalGridLines(verticalGridLines, maxPointsSize, xItemSpacing, gridHeight)
-                // lines inclined towards y axis
-                drawHorizontalGridLines(horizontalGridLines, maxPointsSize, yItemSpacing, gridHeight, gridWidth)
-            }
-
-            /**
-             * Drawing text labels over the x- axis
-             */
-            if (style.visibility.isXAxisLabelVisible) {
-                drawXAxisLabels(labels = presentXAxisLabels, xItemSpacing, 0f, style.colors.xAxisTextColor)
-            }
-
-            /**
-             * Drawing text labels over the y- axis
-             */
-            if (style.visibility.isYAxisLabelVisible) {
-               drawYAxisLabels(yAxisLabels, yItemSpacing, gridHeight, style.colors.yAxisTextColor)
-            }
-
-
-            // plotting points
-            /**
-             * Plotting points on the Graph
-             */
-
-            offsetList.clear() // clearing list to avoid data duplication during recomposition
-
-            for (i in 0 until maxPointsSize) {
-
-                val x1 = xItemSpacing * i
-                val y1 = gridHeight - (yItemSpacing * (yAxisData[i].toFloat() / verticalStep.toFloat()))
-
-                offsetList.add(
-                    Offset(
-                        x = x1,
-                        y = y1
-                    )
-                )
-
-                drawCircle(
-                    color = style.colors.pointColor,
-                    radius = 5.dp.toPx(),
-                    center = Offset(x1, y1)
-                )
-            }
-
-
-            /**
-             * Drawing Gradient fill for the plotted points
-             * Create Path from the offset list with start and end point to complete the path
-             * then draw path using brush
-             */
-            val path = Path().apply {
-                // starting point for gradient
-                moveTo(
-                    x = 0f,
-                    y = gridHeight
-                )
-
-                for (i in 0 until maxPointsSize) {
-                    lineTo(offsetList[i].x, offsetList[i].y)
-                }
-
-                // ending point for gradient
-                lineTo(
-                    x = xItemSpacing * (yAxisData.size - 1),
-                    y = gridHeight
-                )
-
-            }
-
-            drawPath(
-                path = path,
-                brush = style.colors.fillGradient ?: Brush.verticalGradient(
-                    listOf(Color.Transparent, Color.Transparent)
-                )
+            drawHighlightedPointAndCrossHair(
+                this,
+                clickedPoint,
+                style.colors.clickHighlightColor,
+                12.dp.toPx(),
+                style.visibility.isCrossHairVisible,
+                style.colors.crossHairColor,
+                2.dp.toPx(),
+                basicDrawer.gridHeight
             )
 
 
-            /**
-             * drawing line connecting all circles/points
-             */
-            drawPoints(
-                points = offsetList.subList(
-                    fromIndex = 0,
-                    toIndex = maxPointsSize
-                ),
-                color = style.colors.lineColor,
-                pointMode = PointMode.Polygon,
-                strokeWidth = 2.dp.toPx(),
-            )
 
-            /**
-             * highlighting clicks when user clicked on the canvas
-             */
-            clickedPoint.value?.let {
-                drawCircle(
-                    color = style.colors.clickHighlightColor,
-                    center = it,
-                    radius = 12.dp.toPx()
-                )
-                if (style.visibility.isCrossHairVisible) {
-                    drawLine(
-                        color = style.colors.crossHairColor,
-                        start = Offset(it.x, 0f),
-                        end = Offset(it.x, gridHeight),
-                        strokeWidth = 2.dp.toPx(),
-                        pathEffect = PathEffect.dashPathEffect(
-                            intervals = floatArrayOf(15f, 15f)
-                        )
-                    )
-                }
-            }
+
 
         }
     }
 
 
+}
+
+private fun constructOffsetListAndDrawPoints(
+    scope: DrawScope,
+    offsetList: MutableList<Offset>,
+    yAxisData: List<Number>,
+    xItemSpacing: Float,
+    yItemSpacing: Float,
+    verticalStep: Float,
+    gridHeight: Float,
+    pointColor: Color,
+    pointRadiusPx: Float
+) {
+    offsetList.clear() // clearing list to avoid data duplication during recomposition
+
+    for (i in yAxisData.indices) {
+
+        val x1 = xItemSpacing * i
+        val y1 = gridHeight - (yItemSpacing * (yAxisData[i].toFloat() / verticalStep.toFloat()))
+
+        offsetList.add(
+            Offset(
+                x = x1,
+                y = y1
+            )
+        )
+
+        scope.drawCircle(
+            color = pointColor,
+            radius = pointRadiusPx,
+            center = Offset(x1, y1)
+        )
+    }
+}
+
+private fun paintGradientUnderTheGraphLine(
+    scope: DrawScope,
+    offsetList: MutableList<Offset>,
+    yAxisData: List<Number>,
+    gridHeight: Float,
+    xItemSpacing: Float,
+    fillBrush: Brush?
+) {
+    /**
+     * Drawing Gradient fill for the plotted points
+     * Create Path from the offset list with start and end point to complete the path
+     * then draw path using brush
+     */
+    val path = Path().apply {
+        // starting point for gradient
+        moveTo(
+            x = 0f,
+            y = gridHeight
+        )
+
+        offsetList.forEach { offset -> lineTo(offset.x, offset.y) }
+
+        // ending point for gradient
+        lineTo(
+            x = xItemSpacing * (yAxisData.size - 1),
+            y = gridHeight
+        )
+
+    }
+
+    scope.drawPath(
+        path = path,
+        brush = fillBrush ?: Brush.verticalGradient(
+            listOf(Color.Transparent, Color.Transparent)
+        )
+    )
+}
+
+private fun drawLineConnectingPoints(scope: DrawScope, offsetList: List<Offset>, lineColor: Color, lineWidth: Float) {
+    /**
+     * drawing line connecting all circles/points
+     */
+    scope.drawPoints(
+        points = offsetList,
+        color = lineColor,
+        // Polygon mode draws the line that connects the points
+        pointMode = PointMode.Polygon,
+        strokeWidth = lineWidth,
+    )
+}
+
+private fun drawHighlightedPointAndCrossHair(
+    scope: DrawScope,
+    clickedPoint: MutableState<Offset?>,
+    clickHighlightColor: Color,
+    clickHighlightRadius: Float,
+    drawCrossHair: Boolean,
+    crossHairColor: Color,
+    crossHairLineWidth: Float,
+    gridHeight: Float
+) {
+
+    /**
+     * highlighting clicks when user clicked on the canvas
+     */
+    clickedPoint.value?.let {
+        scope.drawCircle(
+            color = clickHighlightColor,
+            center = it,
+            radius = clickHighlightRadius
+        )
+        if (drawCrossHair) {
+            scope.drawLine(
+                color = crossHairColor,
+                start = Offset(it.x, 0f),
+                end = Offset(it.x, gridHeight),
+                strokeWidth = crossHairLineWidth,
+                pathEffect = PathEffect.dashPathEffect(
+                    intervals = floatArrayOf(15f, 15f)
+                )
+            )
+        }
+    }
 }
 
 

@@ -11,6 +11,8 @@ class BasicChartDrawer(
     val gridHeight: Float,
     val yAxisLabels: YAxisLabels,
     val dataList: List<Number>,
+    val horizontalGridLinesCount: Int,
+    val xLabelOffset: Float
 ) {
 
     val xItemSpacing: Float

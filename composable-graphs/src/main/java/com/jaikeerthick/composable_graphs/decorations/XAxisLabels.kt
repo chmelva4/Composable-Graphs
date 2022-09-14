@@ -27,7 +27,7 @@ data class XAxisLabels(
 
     override fun drawToCanvas(basicChartDrawer: BasicChartDrawer) {
         basicChartDrawer.scope.drawXAxisLabels(
-            this, basicChartDrawer.xItemSpacing, basicChartDrawer.xItemSpacing / 2, color
+            this, basicChartDrawer.xItemSpacing, basicChartDrawer.xLabelOffset, color
         )
     }
 }

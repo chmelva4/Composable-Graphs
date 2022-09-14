@@ -96,12 +96,23 @@ fun BarGraph(
 
                 },
         ) {
+
+            val safeSize = if (dataList.isNotEmpty()) dataList.size.toFloat() else 1f
+
             val yAxisLabels = YAxisLabels.fromGraphInputs(dataList)
+            val presentXAxisData = xAxisData ?: XAxisLabels.createDefault(dataList)
             val basicDrawer = BasicChartDrawer(
-                this, size.width - paddingRight.toPx(), size.height - paddingBottom.toPx(), yAxisLabels, dataList
+                this,
+                size.width - paddingRight.toPx(),
+                size.height - paddingBottom.toPx(),
+                yAxisLabels,
+                dataList,
+                presentXAxisData.labels.size + 1,
+                // xItemSpacing /2
+                size.width / safeSize / 2
             )
 
-            val presentXAxisData = xAxisData ?: XAxisLabels.createDefault(dataList)
+
             presentXAxisData.drawToCanvas(basicDrawer)
 
             yAxisLabels.drawToCanvas(basicDrawer)

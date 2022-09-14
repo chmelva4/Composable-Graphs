@@ -4,12 +4,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.dp
-import com.jaikeerthick.composable_graphs.color.LightGray
+import com.jaikeerthick.composable_graphs.composables.BasicChartDrawer
 
 data class VerticalGridLines(
     val color: Color = Color.LightGray,
-    val widthDp: Int = 2
-)
+    val widthPx: Int = 2
+): CanvasDrawable {
+    override fun drawToCanvas(basicChartDrawer: BasicChartDrawer) {
+        basicChartDrawer.scope.drawVerticalGridLines(
+            this, basicChartDrawer.yAxisLabels.labels.size, basicChartDrawer.xItemSpacing, basicChartDrawer.gridHeight
+        )
+    }
+}
 
 fun DrawScope.drawVerticalGridLines(gridLines: VerticalGridLines, count: Int, xItemSpacing: Float, gridHeight: Float) {
 
@@ -18,7 +24,7 @@ fun DrawScope.drawVerticalGridLines(gridLines: VerticalGridLines, count: Int, xI
             color = gridLines.color,
             start = Offset(xItemSpacing * (i), 0f),
             end = Offset(xItemSpacing * (i), gridHeight),
-            strokeWidth = gridLines.widthDp.dp.toPx()
+            strokeWidth = gridLines.widthPx.toFloat()
         )
     }
 

@@ -1,6 +1,5 @@
 package com.jaikeerthick.composable_graphs.composables
 
-import android.graphics.Paint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -15,7 +14,6 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.data.GraphData
 import com.jaikeerthick.composable_graphs.decorations.HorizontalGridLines
 import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
@@ -28,7 +26,6 @@ import com.jaikeerthick.composable_graphs.decorations.drawYAxisLabels
 import com.jaikeerthick.composable_graphs.helper.GraphHelper
 import com.jaikeerthick.composable_graphs.style.LineGraphStyle
 import kotlin.math.pow
-import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 @Composable
@@ -142,8 +139,8 @@ fun LineGraph(
              * Drawing Grid lines inclined towards x axis
              */
             if (style.visibility.isGridVisible) {
-                val horizontalGridLines = HorizontalGridLines(heightDp = 1)
-                val verticalGridLines = VerticalGridLines(widthDp = 1)
+                val horizontalGridLines = HorizontalGridLines(heightPx = 1)
+                val verticalGridLines = VerticalGridLines(widthPx = 1)
                 // lines inclined towards x axis
                 drawVerticalGridLines(verticalGridLines, maxPointsSize, xItemSpacing, gridHeight)
                 // lines inclined towards y axis

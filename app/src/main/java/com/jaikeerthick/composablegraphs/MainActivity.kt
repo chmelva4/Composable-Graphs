@@ -22,6 +22,7 @@ import com.jaikeerthick.composable_graphs.composables.BarGraph
 import com.jaikeerthick.composable_graphs.composables.LineGraph
 import com.jaikeerthick.composable_graphs.data.GraphData
 import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
+import com.jaikeerthick.composable_graphs.decorations.HorizontalGridLines
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.style.BarGraphStyle
 import com.jaikeerthick.composable_graphs.style.BarGraphVisibility
@@ -85,25 +86,26 @@ class MainActivity : ComponentActivity() {
                             }
                         )
 
-                        clickedValue.value?.let {
-                            Row(
-                                modifier = Modifier
-                                    .padding(all = 25.dp)
-                            ) {
-                                Text(text = "Value: ", color = Color.Gray)
-                                Text(
-                                    text = "${it.first}, ${it.second}",
-                                    color = GraphAccent2,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
-                        }
+//                        clickedValue.value?.let {
+//                            Row(
+//                                modifier = Modifier
+//                                    .padding(all = 25.dp)
+//                            ) {
+//                                Text(text = "Value: ", color = Color.Gray)
+//                                Text(
+//                                    text = "${it.first}, ${it.second}",
+//                                    color = GraphAccent2,
+//                                    fontWeight = FontWeight.SemiBold
+//                                )
+//                            }
+//                        }
 
                     }
 
                     BarGraph(
                         dataList = listOf(10, 23, 50, 12, 66) ,
                         style = style,
+                        decorations = listOf(HorizontalGridLines(), BackgroundHighlight(5f, 10f, Color.Cyan.copy(0.35f)))
                     )
 
 

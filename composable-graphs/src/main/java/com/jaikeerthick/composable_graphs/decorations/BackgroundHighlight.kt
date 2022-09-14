@@ -5,15 +5,27 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import com.jaikeerthick.composable_graphs.composables.BasicChartDrawer
 
 data class BackgroundHighlight (
     val yStart: Float,
     val yEnd: Float,
     val color: Color,
-) {
+): CanvasDrawable {
+    override fun drawToCanvas(basicChartDrawer: BasicChartDrawer) {
+        basicChartDrawer.scope.drawBackgroundHighlight(
+            this,
+            basicChartDrawer.verticalStep,
+            basicChartDrawer.yItemSpacing,
+            basicChartDrawer.gridWidth,
+            basicChartDrawer.gridHeight
+        )
+    }
 }
 
-fun DrawScope.drawBackgroundHighlight(highlight: BackgroundHighlight, verticalStep: Float, yItemSpacing: Float, gridWidth: Float, gridHeight: Float) {
+fun DrawScope.drawBackgroundHighlight(
+    highlight: BackgroundHighlight, verticalStep: Float, yItemSpacing: Float, gridWidth: Float, gridHeight: Float
+) {
     drawRect(
         color = highlight.color,
         topLeft = Offset(0f, gridHeight - (yItemSpacing * (highlight.yEnd) / verticalStep)),

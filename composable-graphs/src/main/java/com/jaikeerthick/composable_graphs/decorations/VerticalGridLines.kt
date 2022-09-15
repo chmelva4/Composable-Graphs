@@ -12,17 +12,21 @@ data class VerticalGridLines(
 ): CanvasDrawable {
     override fun drawToCanvas(basicChartDrawer: BasicChartDrawer) {
         basicChartDrawer.scope.drawVerticalGridLines(
-            this, basicChartDrawer.yAxisLabels.labels.size, basicChartDrawer.xItemSpacing, basicChartDrawer.gridHeight
+            this,
+            basicChartDrawer.yAxisLabels.labels.size,
+            basicChartDrawer.xItemSpacing,
+            basicChartDrawer.gridHeight,
+              basicChartDrawer.gridHeight - basicChartDrawer.yItemSpacing * (basicChartDrawer.yAxisLabels.labels.size - 1)
         )
     }
 }
 
-fun DrawScope.drawVerticalGridLines(gridLines: VerticalGridLines, count: Int, xItemSpacing: Float, gridHeight: Float) {
+fun DrawScope.drawVerticalGridLines(gridLines: VerticalGridLines, count: Int, xItemSpacing: Float, gridHeight: Float, verticalStart: Float) {
 
     for (i in 0 until count) {
         drawLine(
             color = gridLines.color,
-            start = Offset(xItemSpacing * (i), 0f),
+            start = Offset(xItemSpacing * (i), verticalStart),
             end = Offset(xItemSpacing * (i), gridHeight),
             strokeWidth = gridLines.widthPx.toFloat()
         )

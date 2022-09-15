@@ -23,4 +23,7 @@ class BasicChartDrawer(
 
     val verticalStep: Float
         get() = GraphHelper.getAbsoluteMax(dataList).toFloat() / if (dataList.isNotEmpty()) dataList.size.toFloat() else 1f
+
+    val yMax: Float
+    get() = GraphHelper.getAbsoluteMax(dataList).toFloat()
 }

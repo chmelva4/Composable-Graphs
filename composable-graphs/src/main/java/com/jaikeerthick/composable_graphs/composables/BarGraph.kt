@@ -103,11 +103,13 @@ fun BarGraph(
             val presentXAxisData = xAxisData ?: XAxisLabels.createDefault(dataList)
             val basicDrawer = BasicChartDrawer(
                 this,
-                size.width - paddingRight.toPx(),
-                size.height - paddingBottom.toPx(),
+                size,
+                20.dp.toPx(),
+                20.dp.toPx(),
+                0.dp.toPx(),
+                20.dp.toPx(),
                 yAxisLabels,
                 dataList,
-                presentXAxisData.labels.size + 1,
                 // xItemSpacing /2
                 size.width / safeSize / 2
             )

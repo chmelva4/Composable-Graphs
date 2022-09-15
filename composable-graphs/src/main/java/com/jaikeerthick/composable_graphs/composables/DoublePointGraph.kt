@@ -28,10 +28,6 @@ fun DoublePointGraph(
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
 ) {
 
-    val paddingRight: Dp = if (style.visibility.isYAxisLabelVisible) 20.dp else 0.dp
-    val paddingBottom: Dp = if (style.visibility.isXAxisLabelVisible) 20.dp else 0.dp
-
-
     val offsetList = remember { mutableListOf<Pair<Offset, Offset>>()}
 
     Column(
@@ -59,16 +55,17 @@ fun DoublePointGraph(
         ) {
 
             val maxList = dataList.map { it.second }
-
             val yAxisLabels = YAxisLabels.fromGraphInputs(maxList)
             val presentXAxisData = xAxisData ?: XAxisLabels.createDefault(maxList)
             val basicDrawer = BasicChartDrawer(
                 this,
-                size.width - paddingRight.toPx(),
-                size.height - paddingBottom.toPx(),
+                size,
+                20.dp.toPx(),
+                20.dp.toPx(),
+                0.dp.toPx(),
+                20.dp.toPx(),
                 yAxisLabels,
                 maxList,
-                presentXAxisData.labels.size + 1,
                 0f
             )
 

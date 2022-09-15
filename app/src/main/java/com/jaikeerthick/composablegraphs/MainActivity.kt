@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
                             }),
                             yAxisData = listOf(200, 40, 60, 450, 700, 30, 50),
                             style = style2,
-                            decorations = listOf(VerticalGridLines(), HorizontalGridLines()),
+                            decorations = listOf(VerticalGridLines(), HorizontalGridLines(), BackgroundHighlight(100f, 300f, DeepPurple.copy(0.2f))),
                             onPointClicked = {
                                 clickedValue.value = it
                             }

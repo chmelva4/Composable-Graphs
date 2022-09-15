@@ -13,7 +13,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
@@ -31,9 +30,6 @@ fun LineGraph(
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
     onPointClicked: (pair: Pair<Any,Any>) -> Unit = {},
 ) {
-
-    val paddingRight: Dp = if (style.visibility.isYAxisLabelVisible) 20.dp else 0.dp
-    val paddingBottom: Dp = if (style.visibility.isXAxisLabelVisible) 20.dp else 0.dp
 
     val offsetList = remember{ mutableListOf<Offset>() }
     val isPointClicked = remember { mutableStateOf(false) }
@@ -113,11 +109,13 @@ fun LineGraph(
             val yAxisLabels = YAxisLabels.fromGraphInputs(yAxisData)
             val basicDrawer = BasicChartDrawer(
                 this,
-                size.width - paddingRight.toPx(),
-                size.height - paddingBottom.toPx(),
+                size,
+                20.dp.toPx(),
+                20.dp.toPx(),
+                0.dp.toPx(),
+                20.dp.toPx(),
                 yAxisLabels,
                 yAxisData,
-                presentXAxisLabels.labels.size,
                 0f
             )
 
@@ -130,10 +128,7 @@ fun LineGraph(
             this,
                 offsetList,
                 yAxisData,
-                basicDrawer.xItemSpacing,
-                basicDrawer.yItemSpacing,
-                basicDrawer.verticalStep,
-                basicDrawer.gridHeight,
+               basicDrawer,
                 style.colors.pointColor,
                 5.dp.toPx()
             )
@@ -168,20 +163,17 @@ fun LineGraph(
 private fun constructOffsetListAndDrawPoints(
     scope: DrawScope,
     offsetList: MutableList<Offset>,
-    yAxisData: List<Number>,
-    xItemSpacing: Float,
-    yItemSpacing: Float,
-    verticalStep: Float,
-    gridHeight: Float,
+    data: List<Number>,
+    basicChartDrawer: BasicChartDrawer,
     pointColor: Color,
     pointRadiusPx: Float
 ) {
     offsetList.clear() // clearing list to avoid data duplication during recomposition
 
-    for (i in yAxisData.indices) {
+    for (i in data.indices) {
 
-        val x1 = xItemSpacing * i
-        val y1 = gridHeight - (yItemSpacing * (yAxisData[i].toFloat() / verticalStep.toFloat()))
+        val x1 = chartXToCanvasX(i.toFloat(), basicChartDrawer)
+        val y1 = chartYtoCanvasY(data[i].toFloat(), basicChartDrawer)
 
         offsetList.add(
             Offset(

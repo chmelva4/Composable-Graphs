@@ -6,6 +6,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.jaikeerthick.composable_graphs.composables.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.composables.chartXToCanvasX
+import com.jaikeerthick.composable_graphs.composables.chartYtoCanvasY
 
 data class BackgroundHighlight (
     val yStart: Float,
@@ -15,20 +17,17 @@ data class BackgroundHighlight (
     override fun drawToCanvas(basicChartDrawer: BasicChartDrawer) {
         basicChartDrawer.scope.drawBackgroundHighlight(
             this,
-            basicChartDrawer.verticalStep,
-            basicChartDrawer.yItemSpacing,
-            basicChartDrawer.gridWidth,
-            basicChartDrawer.gridHeight
+           basicChartDrawer
         )
     }
 }
 
 fun DrawScope.drawBackgroundHighlight(
-    highlight: BackgroundHighlight, verticalStep: Float, yItemSpacing: Float, gridWidth: Float, gridHeight: Float
+    highlight: BackgroundHighlight, basicChartDrawer: BasicChartDrawer
 ) {
     drawRect(
         color = highlight.color,
-        topLeft = Offset(0f, gridHeight - (yItemSpacing * (highlight.yEnd) / verticalStep)),
-        size = Size(gridWidth,  (yItemSpacing * (highlight.yEnd - highlight.yStart) / verticalStep))
+        topLeft = Offset(chartXToCanvasX(0f, basicChartDrawer), chartYtoCanvasY(highlight.yEnd, basicChartDrawer)),
+        size = Size(basicChartDrawer.gridWidth,  (basicChartDrawer.yItemSpacing * (highlight.yEnd - highlight.yStart) / basicChartDrawer.verticalStep))
     )
 }

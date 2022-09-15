@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.color.*
 import com.jaikeerthick.composable_graphs.composables.BarGraph
+import com.jaikeerthick.composable_graphs.composables.DoublePointGraph
 import com.jaikeerthick.composable_graphs.composables.LineGraph
 import com.jaikeerthick.composable_graphs.data.GraphData
 import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
@@ -107,7 +108,13 @@ class MainActivity : ComponentActivity() {
                     BarGraph(
                         dataList = listOf(10, 23, 50, 12, 66) ,
                         style = style,
-                        decorations = listOf(HorizontalGridLines(), BackgroundHighlight(5f, 10f, Color.Cyan.copy(0.35f)))
+                        decorations = listOf(HorizontalGridLines(), VerticalGridLines(), BackgroundHighlight(5f, 10f, Color.Cyan.copy(0.35f)))
+                    )
+
+                    DoublePointGraph(
+                        dataList = listOf(Pair(3, 7), Pair(5, 10), Pair(11, 23), Pair(13, 17), Pair(0, 5)),
+                        style = style,
+                        decorations = listOf(VerticalGridLines(), HorizontalGridLines())
                     )
 
 

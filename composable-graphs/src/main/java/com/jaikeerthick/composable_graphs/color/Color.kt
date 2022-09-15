@@ -18,3 +18,5 @@ val LightGray = Color(0x43B3B3B3)
 
 val PointHighlight = Color(0x749C27B0)
 val PointHighlight2 = Color(0x75388E3C)
+
+val DeepPurple = Color(192, 33, 207)

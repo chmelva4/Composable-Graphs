@@ -24,6 +24,8 @@ import com.jaikeerthick.composable_graphs.composables.LineGraph
 import com.jaikeerthick.composable_graphs.data.GraphData
 import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
 import com.jaikeerthick.composable_graphs.decorations.HorizontalGridLines
+import com.jaikeerthick.composable_graphs.decorations.HorizontalLine
+import com.jaikeerthick.composable_graphs.decorations.HorizontalLineStyle
 import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.style.BarGraphStyle
@@ -114,7 +116,13 @@ class MainActivity : ComponentActivity() {
                     DoublePointGraph(
                         dataList = listOf(Pair(3, 7), Pair(5, 10), Pair(11, 23), Pair(13, 17), Pair(0, 5)),
                         style = style,
-                        decorations = listOf(VerticalGridLines(), HorizontalGridLines())
+                        decorations = listOf(
+                            VerticalGridLines(),
+                            HorizontalGridLines(),
+                            BackgroundHighlight(7f, 12f, DeepPurple.copy(0.2f)),
+                            HorizontalLine(7f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
+                            HorizontalLine(12f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
+                        )
                     )
 
 

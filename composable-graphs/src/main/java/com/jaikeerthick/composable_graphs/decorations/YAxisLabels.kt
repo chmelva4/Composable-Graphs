@@ -13,10 +13,11 @@ import kotlin.math.roundToInt
 
 data class YAxisLabels(
     val labels: List<String>,
-    val color: Int = Color.Black.toArgb()
+    val color: Int = Color.Black.toArgb(),
+    val position: YAxisLabelsPosition = YAxisLabelsPosition.LEFT,
 ): CanvasDrawable {
     companion object {
-        fun fromGraphInputs(inputs: List<Number>): YAxisLabels {
+        fun fromGraphInputs(inputs: List<Number>, color: Int, position: YAxisLabelsPosition): YAxisLabels {
             val absMaxY = GraphHelper.getAbsoluteMax(inputs)
             val verticalStep = absMaxY.toInt() / inputs.size.toFloat()
 
@@ -26,7 +27,7 @@ data class YAxisLabels(
             for (i in 0..inputs.size) {
                 yAxisLabelList.add((verticalStep * i).roundToInt().toString())
             }
-            return YAxisLabels(yAxisLabelList)
+            return YAxisLabels(yAxisLabelList, color, position)
         }
     }
 
@@ -37,19 +38,24 @@ data class YAxisLabels(
     }
 }
 
+enum class YAxisLabelsPosition {LEFT, RIGHT}
+
 fun DrawScope.drawYAxisLabels(labels: YAxisLabels, basicChartDrawer: BasicChartDrawer) {
 
     labels.labels.forEachIndexed {idx, label ->
 
 //        Log.d("DECORATION", "draw y label val: $label locaction x: ${basicChartDrawer.paddingLeftPx + basicChartDrawer.gridWidth} y: ${basicChartDrawer.yItemSpacing * idx}")
 
+        val x = if (labels.position == YAxisLabelsPosition.LEFT) 0 else basicChartDrawer.canvasSize.width
+        val align = if (labels.position == YAxisLabelsPosition.LEFT) Paint.Align.LEFT else Paint.Align.RIGHT
+
         drawContext.canvas.nativeCanvas.drawText(
             label,
-            basicChartDrawer.canvasSize.width,
+            x.toFloat(),
             chartYtoCanvasY(label.toFloat(), basicChartDrawer), //y
             Paint().apply {
                 color = labels.color
-                textAlign = Paint.Align.CENTER
+                textAlign = align
                 textSize = 12.sp.toPx()
             }
         )

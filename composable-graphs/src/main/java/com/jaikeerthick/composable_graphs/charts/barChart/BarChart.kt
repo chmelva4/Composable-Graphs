@@ -81,7 +81,7 @@ fun BarChart(
                 },
         ) {
 
-            val yAxisLabels = YAxisLabels.fromGraphInputs(dataList)
+            val yAxisLabels = YAxisLabels.fromGraphInputs(dataList, style.yAxisTextColor, style.yAxisLabelsPosition)
             val presentXAxisLabels = xAxisLabels?: XAxisLabels.createDefault(dataList)
             val basicDrawer = BasicChartDrawer(
                 this,

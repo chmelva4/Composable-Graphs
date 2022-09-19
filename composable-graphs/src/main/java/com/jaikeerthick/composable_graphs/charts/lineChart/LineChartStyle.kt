@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartStyle
 import com.jaikeerthick.composable_graphs.color.GraphAccent
 import com.jaikeerthick.composable_graphs.color.PointHighlight
+import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
 
 class LineChartStyle(
     paddingValues: PaddingValues = PaddingValues(
@@ -22,7 +23,8 @@ class LineChartStyle(
     isHeaderVisible: Boolean = false,
     backgroundColor: Color = Color.Transparent,
     xAxisTextColor: Int = android.graphics.Color.GRAY,
-    yAxisTextColor: Int = android.graphics.Color.GRAY,
+    yAxisTextColor: Int = android.graphics.Color.BLACK,
+    yAxisLabelsPosition: YAxisLabelsPosition = YAxisLabelsPosition.LEFT,
 
     val isCrossHairVisible: Boolean = false,
     val lineColor: Color = GraphAccent,
@@ -42,7 +44,8 @@ class LineChartStyle(
     isHeaderVisible,
     backgroundColor,
     xAxisTextColor,
-    yAxisTextColor
+    yAxisTextColor,
+    yAxisLabelsPosition,
 ) {
 
 }

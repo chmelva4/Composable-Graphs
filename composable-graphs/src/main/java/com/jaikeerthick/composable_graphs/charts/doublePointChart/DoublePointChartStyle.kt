@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartStyle
+import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
 
 class DoublePointChartStyle(
     paddingValues: PaddingValues = PaddingValues(
@@ -19,7 +20,8 @@ class DoublePointChartStyle(
     isHeaderVisible: Boolean = false,
     backgroundColor: Color = Color.Transparent,
     xAxisTextColor: Int = android.graphics.Color.GRAY,
-    yAxisTextColor: Int = android.graphics.Color.GRAY
+    yAxisTextColor: Int = android.graphics.Color.BLACK,
+    yAxisLabelsPosition: YAxisLabelsPosition = YAxisLabelsPosition.LEFT
 ): BasicChartStyle(
     paddingValues,
     canvasPaddingValues,
@@ -29,5 +31,6 @@ class DoublePointChartStyle(
     isHeaderVisible,
     backgroundColor,
     xAxisTextColor,
-    yAxisTextColor
+    yAxisTextColor,
+    yAxisLabelsPosition
 ) {}

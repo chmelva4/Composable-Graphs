@@ -58,7 +58,7 @@ fun DoublePointChart(
         ) {
 
             val maxList = dataList.map { it.second }
-            val yAxisLabels = YAxisLabels.fromGraphInputs(maxList)
+            val yAxisLabels = YAxisLabels.fromGraphInputs(maxList, style.yAxisTextColor, style.yAxisLabelsPosition)
             val presentXAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(maxList)
             val basicDrawer = BasicChartDrawer(
                 this,

@@ -30,6 +30,7 @@ import com.jaikeerthick.composable_graphs.decorations.HorizontalLine
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLineStyle
 import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,7 +94,7 @@ class MainActivity : ComponentActivity() {
 
                     DoublePointChart(
                         dataList = listOf(Pair(3, 7), Pair(5, 10), Pair(11, 25), Pair(13, 17), Pair(0, 5)),
-                        style = DoublePointChartStyle(),
+                        style = DoublePointChartStyle(yAxisLabelsPosition = YAxisLabelsPosition.RIGHT),
                         decorations = listOf(
                             VerticalGridLines(),
                             HorizontalGridLines(),

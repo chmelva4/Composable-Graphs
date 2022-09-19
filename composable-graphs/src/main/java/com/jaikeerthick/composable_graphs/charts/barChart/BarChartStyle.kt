@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartColors
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartStyle
 import com.jaikeerthick.composable_graphs.color.PointHighlight
+import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
 
 class BarChartStyle(
     paddingValues: PaddingValues = PaddingValues(
@@ -23,7 +24,8 @@ class BarChartStyle(
 
     backgroundColor: Color = Color.Transparent,
     xAxisTextColor: Int = android.graphics.Color.GRAY,
-    yAxisTextColor: Int = android.graphics.Color.GRAY,
+    yAxisTextColor: Int = android.graphics.Color.BLACK,
+    yAxisLabelsPosition: YAxisLabelsPosition = YAxisLabelsPosition.LEFT,
 
     val defaultColorStyle: BarChartColors = BarChartColors(),
     val clickHighlightColor: Color = PointHighlight,
@@ -38,5 +40,6 @@ class BarChartStyle(
     isHeaderVisible,
     backgroundColor,
     xAxisTextColor,
-    yAxisTextColor
+    yAxisTextColor,
+    yAxisLabelsPosition
 )

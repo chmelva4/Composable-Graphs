@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
 
 open class BasicChartStyle(
     val paddingValues: PaddingValues = PaddingValues(
@@ -20,7 +21,9 @@ open class BasicChartStyle(
 
     val backgroundColor: Color = Color.Transparent,
     val xAxisTextColor: Int = android.graphics.Color.GRAY,
-    val yAxisTextColor: Int = android.graphics.Color.GRAY
+    val yAxisTextColor: Int = android.graphics.Color.BLACK,
+
+    val yAxisLabelsPosition: YAxisLabelsPosition = YAxisLabelsPosition.LEFT
 ) {
 
 }

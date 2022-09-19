@@ -111,7 +111,7 @@ fun LineChart(
              */
 
             // XAxis labels handled at the top as they are needed for clicks
-            val yAxisLabels = YAxisLabels.fromGraphInputs(yAxisData)
+            val yAxisLabels = YAxisLabels.fromGraphInputs(yAxisData, style.yAxisTextColor, style.yAxisLabelsPosition)
             val basicDrawer = BasicChartDrawer(
                 this,
                 size,

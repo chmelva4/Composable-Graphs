@@ -1,4 +1,4 @@
-package com.jaikeerthick.composable_graphs.composables
+package com.jaikeerthick.composable_graphs.charts
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -14,42 +14,26 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
 import com.jaikeerthick.composable_graphs.color.Gradient1
 import com.jaikeerthick.composable_graphs.color.Gradient2
-import com.jaikeerthick.composable_graphs.color.LightGray
-import com.jaikeerthick.composable_graphs.data.GraphData
-import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
+import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
-import com.jaikeerthick.composable_graphs.decorations.HorizontalGridLines
-import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
-import com.jaikeerthick.composable_graphs.decorations.drawBackgroundHighlight
-import com.jaikeerthick.composable_graphs.decorations.drawHorizontalGridLines
-import com.jaikeerthick.composable_graphs.decorations.drawVerticalGridLines
-import com.jaikeerthick.composable_graphs.decorations.drawXAxisLabels
-import com.jaikeerthick.composable_graphs.decorations.drawYAxisLabels
-import com.jaikeerthick.composable_graphs.helper.GraphHelper
-import com.jaikeerthick.composable_graphs.style.BarGraphStyle
 
-/**
- * A minimal and stunning Graph
- */
 @Composable
-fun BarGraph(
+fun BarChart(
     dataList: List<Number>,
-    xAxisData: XAxisLabels? = null,
+    xAxisLabels: XAxisLabels? = null,
     header: @Composable() () -> Unit = {},
-    style: BarGraphStyle = BarGraphStyle(),
+    style: BarChartStyle = BarChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
     onBarClicked: (value: Any) -> Unit = {},
 ) {
-
-    val paddingRight: Dp = if (style.visibility.isYAxisLabelVisible) 20.dp else 0.dp
-    val paddingBottom: Dp = if (style.visibility.isXAxisLabelVisible) 20.dp else 0.dp
-
 
     val barOffsetList = remember { mutableListOf<Pair<Offset, Offset>>() }
     val clickedBar: MutableState<Offset?> = remember { mutableStateOf(null) }
@@ -57,14 +41,15 @@ fun BarGraph(
     Column(
         modifier = Modifier
             .background(
-                color = style.colors.backgroundColor
+                color = style.backgroundColor
+//            Color.LightGray
             )
             .fillMaxWidth()
             .padding(style.paddingValues)
             .wrapContentHeight()
     ) {
 
-        if (style.visibility.isHeaderVisible){
+        if (style.isHeaderVisible){
             header()
         }
 
@@ -97,23 +82,26 @@ fun BarGraph(
                 },
         ) {
 
-            val safeSize = if (dataList.isNotEmpty()) dataList.size.toFloat() else 1f
-
-            val yAxisLabels = YAxisLabels.fromGraphInputs(dataList)
-            val presentXAxisData = xAxisData ?: XAxisLabels.createDefault(dataList)
+            val yAxisLabels = YAxisLabels.fromGraphInputs(dataList, style.yAxisTextColor, style.yAxisLabelsPosition)
+            val presentXAxisLabels = xAxisLabels?: XAxisLabels.createDefault(dataList, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
             val basicDrawer = BasicChartDrawer(
                 this,
-                size.width - paddingRight.toPx(),
-                size.height - paddingBottom.toPx(),
+                size,
+                style.canvasPaddingValues.calculateLeftPadding(LayoutDirection.Ltr).toPx(),
+                style.canvasPaddingValues.calculateRightPadding(LayoutDirection.Ltr).toPx(),
+                style.canvasPaddingValues.calculateTopPadding().toPx(),
+                style.canvasPaddingValues.calculateBottomPadding().toPx(),
+                presentXAxisLabels,
                 yAxisLabels,
                 dataList,
-                presentXAxisData.labels.size + 1,
-                // xItemSpacing /2
-                size.width / safeSize / 2
+                customXDataOffset = 0f
             )
 
+            drawPaddings(basicDrawer)
 
-            presentXAxisData.drawToCanvas(basicDrawer)
+
+
+            presentXAxisLabels.drawToCanvas(basicDrawer)
 
             yAxisLabels.drawToCanvas(basicDrawer)
 
@@ -123,14 +111,11 @@ fun BarGraph(
                 this,
                 dataList,
                 barOffsetList,
-                basicDrawer.gridHeight,
-                basicDrawer.xItemSpacing,
-                basicDrawer.yItemSpacing,
-                basicDrawer.verticalStep,
-                style.colors.fillGradient
+                basicDrawer,
+                style.defaultColorStyle.fillGradient
             )
 
-            drawClickedRect(this, clickedBar, style.colors.clickHighlightColor, basicDrawer.xItemSpacing, basicDrawer.gridHeight)
+            drawClickedRect(this, clickedBar, style.clickHighlightColor, basicDrawer)
         }
 
     }
@@ -142,18 +127,14 @@ private fun constructGraph(
     scope: DrawScope,
     dataList: List<Number>,
     barOffsetList: MutableList<Pair<Offset, Offset>>,
-    gridHeight: Float,
-    xItemSpacing: Float,
-    yItemSpacing: Float,
-    verticalStep: Float,
-    barBrush: Brush?
+    basicChartDrawer: BasicChartDrawer,
+    barBrush: Brush
 ) {
     barOffsetList.clear()
     for (i in dataList.indices) {
 
-        val x1 = xItemSpacing * i
-        val y1 =
-            gridHeight - (yItemSpacing * (dataList[i].toFloat() / verticalStep))
+        val x1 = chartXToCanvasX(i.toFloat(), basicChartDrawer)
+        val y1 = chartYtoCanvasY(dataList[i].toFloat(), basicChartDrawer)
 
         barOffsetList.add(
             Pair(
@@ -162,23 +143,21 @@ private fun constructGraph(
                     y = y1
                 ),
                 second = Offset(
-                    x = (xItemSpacing * (i + 1)),
+                    x = chartXToCanvasX((i + 1).toFloat(), basicChartDrawer),
                     y = y1
                 ),
             )
         )
 
         scope.drawRect(
-            brush = barBrush ?: Brush.verticalGradient(
-                listOf(Gradient1, Gradient2)
-            ),
+            brush = barBrush,
             topLeft = Offset(
                 x = x1,
                 y = y1
             ),
             size = Size(
-                width = xItemSpacing,
-                height = gridHeight - y1
+                width = basicChartDrawer.xItemSpacing,
+                height = basicChartDrawer.paddingTopPx +  basicChartDrawer.gridHeight - y1
             )
         )
 
@@ -186,7 +165,7 @@ private fun constructGraph(
 }
 
 private fun drawClickedRect(
-    scope: DrawScope, clickedBar: MutableState<Offset?>, highlightColor: Color, xItemSpacing: Float, gridHeight: Float
+    scope: DrawScope, clickedBar: MutableState<Offset?>, highlightColor: Color, basicChartDrawer: BasicChartDrawer
 ) {
     // click action
     clickedBar.value?.let{
@@ -198,8 +177,8 @@ private fun drawClickedRect(
                 y = it.y
             ),
             size = Size(
-                width = xItemSpacing,
-                height = gridHeight - it.y
+                width = basicChartDrawer.xItemSpacing,
+                height = basicChartDrawer.paddingTopPx + basicChartDrawer.gridHeight - it.y
             )
         )
 

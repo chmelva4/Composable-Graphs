@@ -1,4 +1,4 @@
-package com.jaikeerthick.composable_graphs.composables
+package com.jaikeerthick.composable_graphs.charts.doublePointChart
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -9,42 +9,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
+import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
+import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.charts.drawPaddings
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
-import com.jaikeerthick.composable_graphs.style.BarGraphStyle
 
 /**
  * A minimal and stunning Graph
  */
 @Composable
-fun DoublePointGraph(
+fun DoublePointChart(
     dataList: List<Pair<Number, Number>>,
-    xAxisData: XAxisLabels? = null,
+    xAxisLabels: XAxisLabels? = null,
     header: @Composable() () -> Unit = {},
-    style: BarGraphStyle = BarGraphStyle(),
+    style: DoublePointChartStyle = DoublePointChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
 ) {
-
-    val paddingRight: Dp = if (style.visibility.isYAxisLabelVisible) 20.dp else 0.dp
-    val paddingBottom: Dp = if (style.visibility.isXAxisLabelVisible) 20.dp else 0.dp
-
 
     val offsetList = remember { mutableListOf<Pair<Offset, Offset>>()}
 
     Column(
         modifier = Modifier
             .background(
-                color = style.colors.backgroundColor
+                color = style.backgroundColor
             )
             .fillMaxWidth()
             .padding(style.paddingValues)
             .wrapContentHeight()
     ) {
 
-        if (style.visibility.isHeaderVisible){
+        if (style.isHeaderVisible){
             header()
         }
 
@@ -59,21 +59,24 @@ fun DoublePointGraph(
         ) {
 
             val maxList = dataList.map { it.second }
-
-            val yAxisLabels = YAxisLabels.fromGraphInputs(maxList)
-            val presentXAxisData = xAxisData ?: XAxisLabels.createDefault(maxList)
+            val yAxisLabels = YAxisLabels.fromGraphInputs(maxList, style.yAxisTextColor, style.yAxisLabelsPosition)
+            val presentXAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(maxList, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
             val basicDrawer = BasicChartDrawer(
                 this,
-                size.width - paddingRight.toPx(),
-                size.height - paddingBottom.toPx(),
+                size,
+                style.canvasPaddingValues.calculateLeftPadding(LayoutDirection.Ltr).toPx(),
+                style.canvasPaddingValues.calculateLeftPadding(LayoutDirection.Ltr).toPx(),
+                style.canvasPaddingValues.calculateTopPadding().toPx(),
+                style.canvasPaddingValues.calculateBottomPadding().toPx(),
+                presentXAxisLabels,
                 yAxisLabels,
                 maxList,
-                presentXAxisData.labels.size + 1,
-                0f
             )
 
+            drawPaddings(basicDrawer)
 
-            presentXAxisData.drawToCanvas(basicDrawer)
+
+            presentXAxisLabels.drawToCanvas(basicDrawer)
 
             yAxisLabels.drawToCanvas(basicDrawer)
 
@@ -82,10 +85,7 @@ fun DoublePointGraph(
             constructOffsetList(
                 offsetList,
                 dataList,
-                basicDrawer.xItemSpacing,
-                basicDrawer.yItemSpacing,
-                basicDrawer.verticalStep,
-                basicDrawer.gridHeight,
+                basicDrawer
             )
 
             drawLineConnectingPoints(this, offsetList, Color.Magenta, 2.dp.toPx())
@@ -99,18 +99,15 @@ fun DoublePointGraph(
 private fun constructOffsetList(
     offsetList: MutableList<Pair<Offset, Offset>>,
     data: List<Pair<Number, Number>>,
-    xItemSpacing: Float,
-    yItemSpacing: Float,
-    verticalStep: Float,
-    gridHeight: Float,
+    basicChartDrawer: BasicChartDrawer,
 ) {
     offsetList.clear() // clearing list to avoid data duplication during recomposition
 
     for (i in data.indices) {
 
-        val x1 = xItemSpacing * i
-        val y1 = gridHeight - (yItemSpacing * (data[i].first.toFloat() / verticalStep.toFloat()))
-        val y2 = gridHeight - (yItemSpacing * (data[i].second.toFloat() / verticalStep.toFloat()))
+        val x1 = chartXToCanvasX(i.toFloat(), basicChartDrawer)
+        val y1 = chartYtoCanvasY(data[i].first.toFloat(), basicChartDrawer)
+        val y2 = chartYtoCanvasY(data[i].second.toFloat(), basicChartDrawer)
 
         offsetList.add(
             Pair(Offset(x1, y1), Offset(x1, y2))

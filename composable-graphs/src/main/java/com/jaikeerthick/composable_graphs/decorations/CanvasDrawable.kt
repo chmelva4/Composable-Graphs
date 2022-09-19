@@ -1,7 +1,6 @@
 package com.jaikeerthick.composable_graphs.decorations
 
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import com.jaikeerthick.composable_graphs.composables.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
 
 interface CanvasDrawable {
 

@@ -1,4 +1,4 @@
-package com.jaikeerthick.composable_graphs.composables
+package com.jaikeerthick.composable_graphs.charts.lineChart
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -13,48 +13,49 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
+import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
+import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.charts.drawPaddings
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
-import com.jaikeerthick.composable_graphs.style.LineGraphStyle
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 @Composable
-fun LineGraph(
-    xAxisData: XAxisLabels? = null,
+fun LineChart(
+    xAxisLabels: XAxisLabels? = null,
     yAxisData: List<Number>,
     header: @Composable() () -> Unit = {},
-    style: LineGraphStyle = LineGraphStyle(),
+    style: LineChartStyle = LineChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
     onPointClicked: (pair: Pair<Any,Any>) -> Unit = {},
 ) {
 
-    val paddingRight: Dp = if (style.visibility.isYAxisLabelVisible) 20.dp else 0.dp
-    val paddingBottom: Dp = if (style.visibility.isXAxisLabelVisible) 20.dp else 0.dp
-
     val offsetList = remember{ mutableListOf<Offset>() }
     val isPointClicked = remember { mutableStateOf(false) }
     val clickedPoint: MutableState<Offset?> = remember { mutableStateOf(null) }
-    val presentXAxisLabels: XAxisLabels = xAxisData ?: XAxisLabels.createDefault(yAxisData)
+    val presentXAxisLabels: XAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(yAxisData, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
 
 
 
     Column(
         modifier = Modifier
             .background(
-                color = style.colors.backgroundColor
+                color = style.backgroundColor
             )
             .fillMaxWidth()
-            .padding(style.paddingValues)
-            .padding(top = 16.dp),
+            .padding(style.paddingValues),
+//            .padding(top = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
 
     ){
 
-        if (style.visibility.isHeaderVisible){
+        if (style.isHeaderVisible){
             header()
         }
 
@@ -63,7 +64,8 @@ fun LineGraph(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(style.height)
-                .padding(horizontal = 10.dp)
+                .padding(horizontal = 1.dp)
+                .padding(top = 12.dp)
                 .pointerInput(true) {
 
                     detectTapGestures { p1: Offset ->
@@ -110,16 +112,20 @@ fun LineGraph(
              */
 
             // XAxis labels handled at the top as they are needed for clicks
-            val yAxisLabels = YAxisLabels.fromGraphInputs(yAxisData)
+            val yAxisLabels = YAxisLabels.fromGraphInputs(yAxisData, style.yAxisTextColor, style.yAxisLabelsPosition)
             val basicDrawer = BasicChartDrawer(
                 this,
-                size.width - paddingRight.toPx(),
-                size.height - paddingBottom.toPx(),
+                size,
+                style.canvasPaddingValues.calculateLeftPadding(LayoutDirection.Ltr).toPx(),
+                style.canvasPaddingValues.calculateLeftPadding(LayoutDirection.Ltr).toPx(),
+                style.canvasPaddingValues.calculateTopPadding().toPx(),
+                style.canvasPaddingValues.calculateBottomPadding().toPx(),
+                presentXAxisLabels,
                 yAxisLabels,
                 yAxisData,
-                presentXAxisLabels.labels.size,
-                0f
             )
+
+            drawPaddings(basicDrawer)
 
             presentXAxisLabels.drawToCanvas(basicDrawer)
             yAxisLabels.drawToCanvas(basicDrawer)
@@ -130,27 +136,24 @@ fun LineGraph(
             this,
                 offsetList,
                 yAxisData,
-                basicDrawer.xItemSpacing,
-                basicDrawer.yItemSpacing,
-                basicDrawer.verticalStep,
-                basicDrawer.gridHeight,
-                style.colors.pointColor,
+               basicDrawer,
+                style.defaultColors.pointColor,
                 5.dp.toPx()
             )
 
             paintGradientUnderTheGraphLine(
-                this, offsetList, yAxisData, basicDrawer.gridHeight, basicDrawer.xItemSpacing, style.colors.fillGradient
+                this, offsetList, yAxisData, basicDrawer, style.fillGradient
             )
 
-            drawLineConnectingPoints(this, offsetList, style.colors.lineColor, 2.dp.toPx())
+            drawLineConnectingPoints(this, offsetList, style.lineColor, 2.dp.toPx())
 
             drawHighlightedPointAndCrossHair(
                 this,
                 clickedPoint,
-                style.colors.clickHighlightColor,
+                style.clickHighlightColor,
                 12.dp.toPx(),
-                style.visibility.isCrossHairVisible,
-                style.colors.crossHairColor,
+                style.isCrossHairVisible,
+                style.crossHairColor,
                 2.dp.toPx(),
                 basicDrawer.gridHeight
             )
@@ -168,20 +171,17 @@ fun LineGraph(
 private fun constructOffsetListAndDrawPoints(
     scope: DrawScope,
     offsetList: MutableList<Offset>,
-    yAxisData: List<Number>,
-    xItemSpacing: Float,
-    yItemSpacing: Float,
-    verticalStep: Float,
-    gridHeight: Float,
+    data: List<Number>,
+    basicChartDrawer: BasicChartDrawer,
     pointColor: Color,
     pointRadiusPx: Float
 ) {
     offsetList.clear() // clearing list to avoid data duplication during recomposition
 
-    for (i in yAxisData.indices) {
+    for (i in data.indices) {
 
-        val x1 = xItemSpacing * i
-        val y1 = gridHeight - (yItemSpacing * (yAxisData[i].toFloat() / verticalStep.toFloat()))
+        val x1 = chartXToCanvasX(i.toFloat(), basicChartDrawer)
+        val y1 = chartYtoCanvasY(data[i].toFloat(), basicChartDrawer)
 
         offsetList.add(
             Offset(
@@ -202,9 +202,8 @@ private fun paintGradientUnderTheGraphLine(
     scope: DrawScope,
     offsetList: MutableList<Offset>,
     yAxisData: List<Number>,
-    gridHeight: Float,
-    xItemSpacing: Float,
-    fillBrush: Brush?
+    basicChartDrawer: BasicChartDrawer,
+    fillBrush: Brush
 ) {
     /**
      * Drawing Gradient fill for the plotted points
@@ -214,25 +213,24 @@ private fun paintGradientUnderTheGraphLine(
     val path = Path().apply {
         // starting point for gradient
         moveTo(
-            x = 0f,
-            y = gridHeight
+            x = chartXToCanvasX(0f, basicChartDrawer),
+            y = chartYtoCanvasY(0f, basicChartDrawer)
         )
 
         offsetList.forEach { offset -> lineTo(offset.x, offset.y) }
 
-        // ending point for gradient
+//         ending point for gradient
         lineTo(
-            x = xItemSpacing * (yAxisData.size - 1),
-            y = gridHeight
+            x = offsetList.last().x,
+            y = chartYtoCanvasY(0f, basicChartDrawer)
         )
 
     }
 
     scope.drawPath(
         path = path,
-        brush = fillBrush ?: Brush.verticalGradient(
-            listOf(Color.Transparent, Color.Transparent)
-        )
+//        color = Color.Red
+        brush = fillBrush
     )
 }
 

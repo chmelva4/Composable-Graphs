@@ -22,11 +22,11 @@ data class HorizontalGridLines(
 
 fun DrawScope.drawHorizontalGridLines(gridLines: HorizontalGridLines, basicChartDrawer: BasicChartDrawer) {
 
-    for (i in 0 until basicChartDrawer.yAxisLabels.labels.size) {
+    for (label in basicChartDrawer.yAxisLabels.labels) {
         drawLine(
             color = gridLines.color,
-            start = Offset(chartXToCanvasX(0f, basicChartDrawer), chartYtoCanvasY(basicChartDrawer.yItemSpacing * i, basicChartDrawer)),
-            end = Offset(basicChartDrawer.gridWidth, chartYtoCanvasY(basicChartDrawer.yItemSpacing * i, basicChartDrawer)),
+            start = Offset(basicChartDrawer.paddingLeftPx, chartYtoCanvasY(label.toFloat(), basicChartDrawer)),
+            end = Offset(basicChartDrawer.paddingLeftPx + basicChartDrawer.gridWidth , chartYtoCanvasY(label.toFloat(), basicChartDrawer)),
             strokeWidth = gridLines.heightPx.toFloat()
         )
     }

@@ -39,6 +39,9 @@ open class BasicChartDrawer(
     val yMax: Float
         get() = GraphHelper.getAbsoluteMax(dataList).toFloat()
 
+    val maxX: Float
+        get() = (dataList.size - 1).toFloat()
+
     val xLabelOffset: Float
         get() = customXLabelOffset ?: (xItemSpacing / 2)
 

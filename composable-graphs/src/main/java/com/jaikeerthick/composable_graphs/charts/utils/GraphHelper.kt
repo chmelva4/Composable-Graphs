@@ -1,4 +1,4 @@
-package com.jaikeerthick.composable_graphs.helper
+package com.jaikeerthick.composable_graphs.charts.utils
 
 import kotlin.math.roundToInt
 

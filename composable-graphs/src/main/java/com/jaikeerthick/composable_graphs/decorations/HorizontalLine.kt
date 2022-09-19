@@ -1,13 +1,11 @@
 package com.jaikeerthick.composable_graphs.decorations
 
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import com.jaikeerthick.composable_graphs.composables.BasicChartDrawer
-import com.jaikeerthick.composable_graphs.composables.chartXToCanvasX
-import com.jaikeerthick.composable_graphs.composables.chartYtoCanvasY
+import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
 
 data class HorizontalLine(val y: Float, val color: Color, val widthPx: Float,  val style: HorizontalLineStyle = HorizontalLineStyle.FULL): CanvasDrawable {
 

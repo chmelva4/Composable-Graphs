@@ -3,9 +3,7 @@ package com.jaikeerthick.composable_graphs.decorations
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.unit.dp
-import com.jaikeerthick.composable_graphs.composables.BasicChartDrawer
-import com.jaikeerthick.composable_graphs.composables.chartXToCanvasX
+import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
 
 data class VerticalGridLines(
     val color: Color = Color.LightGray,

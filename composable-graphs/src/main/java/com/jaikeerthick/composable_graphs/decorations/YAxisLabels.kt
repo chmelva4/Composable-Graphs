@@ -1,15 +1,14 @@
 package com.jaikeerthick.composable_graphs.decorations
 
 import android.graphics.Paint
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.sp
-import com.jaikeerthick.composable_graphs.composables.BasicChartDrawer
-import com.jaikeerthick.composable_graphs.composables.chartYtoCanvasY
-import com.jaikeerthick.composable_graphs.helper.GraphHelper
+import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
+import com.jaikeerthick.composable_graphs.charts.utils.GraphHelper
 import kotlin.math.roundToInt
 
 data class YAxisLabels(

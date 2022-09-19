@@ -1,11 +1,10 @@
-package com.jaikeerthick.composable_graphs.composables
+package com.jaikeerthick.composable_graphs.charts.common
 
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
-import com.jaikeerthick.composable_graphs.helper.GraphHelper
+import com.jaikeerthick.composable_graphs.charts.utils.GraphHelper
 
 open class BasicChartDrawer(
     val scope: DrawScope,

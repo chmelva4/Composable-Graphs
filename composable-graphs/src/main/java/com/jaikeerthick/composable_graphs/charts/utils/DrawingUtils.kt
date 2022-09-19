@@ -1,8 +1,9 @@
-package com.jaikeerthick.composable_graphs.composables
+package com.jaikeerthick.composable_graphs.charts
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
 
 fun drawPaddings(basicChartDrawer: BasicChartDrawer) {
 

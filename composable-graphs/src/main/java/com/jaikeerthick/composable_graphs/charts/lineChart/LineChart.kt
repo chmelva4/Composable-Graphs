@@ -1,4 +1,4 @@
-package com.jaikeerthick.composable_graphs.composables
+package com.jaikeerthick.composable_graphs.charts.lineChart
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -13,20 +13,24 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
+import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
+import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.charts.drawPaddings
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
-import com.jaikeerthick.composable_graphs.style.LineGraphStyle
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 @Composable
-fun LineGraph(
+fun LineChart(
     xAxisLabels: XAxisLabels? = null,
     yAxisData: List<Number>,
     header: @Composable() () -> Unit = {},
-    style: LineGraphStyle = LineGraphStyle(),
+    style: LineChartStyle = LineChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
     onPointClicked: (pair: Pair<Any,Any>) -> Unit = {},
 ) {
@@ -41,16 +45,16 @@ fun LineGraph(
     Column(
         modifier = Modifier
             .background(
-                color = style.colors.backgroundColor
+                color = style.backgroundColor
             )
             .fillMaxWidth()
-            .padding(style.paddingValues)
-            .padding(top = 16.dp),
+            .padding(style.paddingValues),
+//            .padding(top = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
 
     ){
 
-        if (style.visibility.isHeaderVisible){
+        if (style.isHeaderVisible){
             header()
         }
 
@@ -59,7 +63,8 @@ fun LineGraph(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(style.height)
-                .padding(horizontal = 10.dp)
+                .padding(horizontal = 1.dp)
+                .padding(top = 12.dp)
                 .pointerInput(true) {
 
                     detectTapGestures { p1: Offset ->
@@ -110,10 +115,10 @@ fun LineGraph(
             val basicDrawer = BasicChartDrawer(
                 this,
                 size,
-                20.dp.toPx(),
-                20.dp.toPx(),
-                0.dp.toPx(),
-                20.dp.toPx(),
+                style.canvasPaddingValues.calculateLeftPadding(LayoutDirection.Ltr).toPx(),
+                style.canvasPaddingValues.calculateLeftPadding(LayoutDirection.Ltr).toPx(),
+                style.canvasPaddingValues.calculateTopPadding().toPx(),
+                style.canvasPaddingValues.calculateBottomPadding().toPx(),
                 presentXAxisLabels,
                 yAxisLabels,
                 yAxisData,
@@ -131,23 +136,23 @@ fun LineGraph(
                 offsetList,
                 yAxisData,
                basicDrawer,
-                style.colors.pointColor,
+                style.defaultColors.pointColor,
                 5.dp.toPx()
             )
 
             paintGradientUnderTheGraphLine(
-                this, offsetList, yAxisData, basicDrawer, style.colors.fillGradient
+                this, offsetList, yAxisData, basicDrawer, style.fillGradient
             )
 
-            drawLineConnectingPoints(this, offsetList, style.colors.lineColor, 2.dp.toPx())
+            drawLineConnectingPoints(this, offsetList, style.lineColor, 2.dp.toPx())
 
             drawHighlightedPointAndCrossHair(
                 this,
                 clickedPoint,
-                style.colors.clickHighlightColor,
+                style.clickHighlightColor,
                 12.dp.toPx(),
-                style.visibility.isCrossHairVisible,
-                style.colors.crossHairColor,
+                style.isCrossHairVisible,
+                style.crossHairColor,
                 2.dp.toPx(),
                 basicDrawer.gridHeight
             )
@@ -197,7 +202,7 @@ private fun paintGradientUnderTheGraphLine(
     offsetList: MutableList<Offset>,
     yAxisData: List<Number>,
     basicChartDrawer: BasicChartDrawer,
-    fillBrush: Brush?
+    fillBrush: Brush
 ) {
     /**
      * Drawing Gradient fill for the plotted points
@@ -224,9 +229,7 @@ private fun paintGradientUnderTheGraphLine(
     scope.drawPath(
         path = path,
 //        color = Color.Red
-        brush = fillBrush ?: Brush.verticalGradient(
-            listOf(Color.Transparent, Color.Transparent)
-        )
+        brush = fillBrush
     )
 }
 

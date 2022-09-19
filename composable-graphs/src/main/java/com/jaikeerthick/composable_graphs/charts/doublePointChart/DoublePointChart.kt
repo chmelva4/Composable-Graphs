@@ -1,4 +1,4 @@
-package com.jaikeerthick.composable_graphs.composables
+package com.jaikeerthick.composable_graphs.charts.doublePointChart
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -9,21 +9,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
+import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
+import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.charts.drawPaddings
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
-import com.jaikeerthick.composable_graphs.style.BarGraphStyle
 
 /**
  * A minimal and stunning Graph
  */
 @Composable
-fun DoublePointGraph(
+fun DoublePointChart(
     dataList: List<Pair<Number, Number>>,
     xAxisLabels: XAxisLabels? = null,
     header: @Composable() () -> Unit = {},
-    style: BarGraphStyle = BarGraphStyle(),
+    style: DoublePointChartStyle = DoublePointChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
 ) {
 
@@ -32,14 +36,14 @@ fun DoublePointGraph(
     Column(
         modifier = Modifier
             .background(
-                color = style.colors.backgroundColor
+                color = style.backgroundColor
             )
             .fillMaxWidth()
             .padding(style.paddingValues)
             .wrapContentHeight()
     ) {
 
-        if (style.visibility.isHeaderVisible){
+        if (style.isHeaderVisible){
             header()
         }
 
@@ -59,14 +63,16 @@ fun DoublePointGraph(
             val basicDrawer = BasicChartDrawer(
                 this,
                 size,
-                20.dp.toPx(),
-                20.dp.toPx(),
-                0.dp.toPx(),
-                20.dp.toPx(),
+                style.canvasPaddingValues.calculateLeftPadding(LayoutDirection.Ltr).toPx(),
+                style.canvasPaddingValues.calculateLeftPadding(LayoutDirection.Ltr).toPx(),
+                style.canvasPaddingValues.calculateTopPadding().toPx(),
+                style.canvasPaddingValues.calculateBottomPadding().toPx(),
                 presentXAxisLabels,
                 yAxisLabels,
                 maxList,
             )
+
+            drawPaddings(basicDrawer)
 
 
             presentXAxisLabels.drawToCanvas(basicDrawer)

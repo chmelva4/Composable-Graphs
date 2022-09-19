@@ -1,4 +1,4 @@
-package com.jaikeerthick.composable_graphs.data
+package com.jaikeerthick.composable_graphs.charts.common
 
 sealed class GraphData(val text: kotlin.String) {
 

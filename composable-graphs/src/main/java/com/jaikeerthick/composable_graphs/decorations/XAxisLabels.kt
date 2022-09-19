@@ -6,8 +6,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.sp
-import com.jaikeerthick.composable_graphs.composables.BasicChartDrawer
-import com.jaikeerthick.composable_graphs.data.GraphData
+import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.charts.common.GraphData
 
 enum class xAxisLabelsPosition {
     TOP, BOTTOM

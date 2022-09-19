@@ -1,6 +1,7 @@
 package com.jaikeerthick.composable_graphs.decorations
 
 import android.graphics.Paint
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
@@ -41,10 +42,12 @@ fun DrawScope.drawYAxisLabels(labels: YAxisLabels, basicChartDrawer: BasicChartD
 
     labels.labels.forEachIndexed {idx, label ->
 
+//        Log.d("DECORATION", "draw y label val: $label locaction x: ${basicChartDrawer.paddingLeftPx + basicChartDrawer.gridWidth} y: ${basicChartDrawer.yItemSpacing * idx}")
+
         drawContext.canvas.nativeCanvas.drawText(
             label,
             basicChartDrawer.paddingLeftPx + basicChartDrawer.gridWidth,
-            chartYtoCanvasY(basicChartDrawer.yItemSpacing * idx, basicChartDrawer), //y
+            chartYtoCanvasY(label.toFloat(), basicChartDrawer), //y
             Paint().apply {
                 color = labels.color
                 textAlign = Paint.Align.CENTER

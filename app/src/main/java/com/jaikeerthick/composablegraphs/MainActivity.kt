@@ -108,11 +108,11 @@ class MainActivity : ComponentActivity() {
 
                     }
 
-//                    BarGraph(
-//                        dataList = listOf(10, 23, 50, 12, 66) ,
-//                        style = style,
-//                        decorations = listOf()
-//                    )
+                    BarGraph(
+                        dataList = listOf(10, 23, 50, 12, 66) ,
+                        style = style,
+                        decorations = listOf()
+                    )
 //
 //                    DoublePointGraph(
 //                        dataList = listOf(Pair(3, 7), Pair(5, 10), Pair(11, 23), Pair(13, 17), Pair(0, 5)),

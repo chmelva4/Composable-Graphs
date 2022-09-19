@@ -42,8 +42,8 @@ fun BarGraph(
     Column(
         modifier = Modifier
             .background(
-//                color = style.colors.backgroundColor
-            Color.LightGray
+                color = style.colors.backgroundColor
+//            Color.LightGray
             )
             .fillMaxWidth()
             .padding(style.paddingValues)

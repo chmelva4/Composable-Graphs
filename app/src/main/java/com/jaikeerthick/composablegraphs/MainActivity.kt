@@ -83,7 +83,8 @@ class MainActivity : ComponentActivity() {
                             yAxisData = listOf(200, 40, 60, 450, 700, 30, 50),
                             style = style2,
                             decorations = listOf(
-//                                VerticalGridLines(),
+                                VerticalGridLines(),
+//                                HorizontalGridLines(),
 //                                HorizontalGridLines(),
 //                                BackgroundHighlight(100f, 300f, DeepPurple.copy(0.2f))
                             ),
@@ -111,14 +112,16 @@ class MainActivity : ComponentActivity() {
                     BarGraph(
                         dataList = listOf(10, 23, 50, 12, 66, 78) ,
                         style = style,
-                        decorations = listOf()
+                        decorations = listOf(
+                            VerticalGridLines()
+                        )
                     )
 
                     DoublePointGraph(
                         dataList = listOf(Pair(3, 7), Pair(5, 10), Pair(11, 25), Pair(13, 17), Pair(0, 5)),
                         style = style,
                         decorations = listOf(
-//                            VerticalGridLines(),
+                            VerticalGridLines(),
 //                            HorizontalGridLines(),
 //                            BackgroundHighlight(7f, 12f, DeepPurple.copy(0.2f)),
 //                            HorizontalLine(7f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),

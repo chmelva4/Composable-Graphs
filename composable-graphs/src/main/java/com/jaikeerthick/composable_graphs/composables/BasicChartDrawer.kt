@@ -1,9 +1,8 @@
 package com.jaikeerthick.composable_graphs.composables
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.unit.LayoutDirection
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
 import com.jaikeerthick.composable_graphs.helper.GraphHelper
@@ -18,7 +17,8 @@ open class BasicChartDrawer(
     val xAxisLabels: XAxisLabels,
     val yAxisLabels: YAxisLabels,
     val dataList: List<Number>,
-    val xLabelOffset: Float,
+    val customXDataOffset: Float? = null,
+    val customXLabelOffset: Float? = null,
 ) {
 
     val gridWidth: Float
@@ -27,7 +27,7 @@ open class BasicChartDrawer(
     val gridHeight: Float
         get() = canvasSize.height - paddingTopPx - paddingBottomPx
 
-    open val xItemSpacing: Float
+    val xItemSpacing: Float
         get() = gridWidth / if (dataList.isNotEmpty()) dataList.size else 1
 
     val yItemSpacing: Float
@@ -38,4 +38,10 @@ open class BasicChartDrawer(
 
     val yMax: Float
         get() = GraphHelper.getAbsoluteMax(dataList).toFloat()
+
+    val xLabelOffset: Float
+        get() = customXLabelOffset ?: (xItemSpacing / 2)
+
+    val xDataOffset: Float
+        get() = customXDataOffset ?: (xItemSpacing / 2)
 }

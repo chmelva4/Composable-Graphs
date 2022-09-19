@@ -66,7 +66,6 @@ fun DoublePointGraph(
                 presentXAxisLabels,
                 yAxisLabels,
                 maxList,
-                0f
             )
 
 

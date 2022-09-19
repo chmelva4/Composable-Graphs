@@ -117,7 +117,6 @@ fun LineGraph(
                 presentXAxisLabels,
                 yAxisLabels,
                 yAxisData,
-                0f
             )
 
             drawPaddings(basicDrawer)

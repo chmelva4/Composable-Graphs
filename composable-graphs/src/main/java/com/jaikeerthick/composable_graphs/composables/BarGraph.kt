@@ -87,7 +87,7 @@ fun BarGraph(
 
             val yAxisLabels = YAxisLabels.fromGraphInputs(dataList)
             val presentXAxisLabels = xAxisLabels?: XAxisLabels.createDefault(dataList)
-            val basicDrawer = object : BasicChartDrawer(
+            val basicDrawer = BasicChartDrawer(
                 this,
                 size,
                 20.dp.toPx(),
@@ -97,12 +97,8 @@ fun BarGraph(
                 presentXAxisLabels,
                 yAxisLabels,
                 dataList,
-                // xItemSpacing /2
-                size.width / safeSize / 2
-            ) {
-                override val xItemSpacing: Float
-                    get() = gridWidth / if (dataList.isNotEmpty()) dataList.size else 1
-            }
+                customXDataOffset = 0f
+            )
 
             drawPaddings(basicDrawer)
 

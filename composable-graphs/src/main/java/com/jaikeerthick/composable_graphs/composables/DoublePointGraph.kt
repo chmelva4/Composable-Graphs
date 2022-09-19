@@ -78,10 +78,7 @@ fun DoublePointGraph(
             constructOffsetList(
                 offsetList,
                 dataList,
-                basicDrawer.xItemSpacing,
-                basicDrawer.yItemSpacing,
-                basicDrawer.verticalStep,
-                basicDrawer.gridHeight,
+                basicDrawer
             )
 
             drawLineConnectingPoints(this, offsetList, Color.Magenta, 2.dp.toPx())
@@ -95,18 +92,15 @@ fun DoublePointGraph(
 private fun constructOffsetList(
     offsetList: MutableList<Pair<Offset, Offset>>,
     data: List<Pair<Number, Number>>,
-    xItemSpacing: Float,
-    yItemSpacing: Float,
-    verticalStep: Float,
-    gridHeight: Float,
+    basicChartDrawer: BasicChartDrawer,
 ) {
     offsetList.clear() // clearing list to avoid data duplication during recomposition
 
     for (i in data.indices) {
 
-        val x1 = xItemSpacing * i
-        val y1 = gridHeight - (yItemSpacing * (data[i].first.toFloat() / verticalStep.toFloat()))
-        val y2 = gridHeight - (yItemSpacing * (data[i].second.toFloat() / verticalStep.toFloat()))
+        val x1 = chartXToCanvasX(i.toFloat(), basicChartDrawer)
+        val y1 = chartYtoCanvasY(data[i].first.toFloat(), basicChartDrawer)
+        val y2 = chartYtoCanvasY(data[i].second.toFloat(), basicChartDrawer)
 
         offsetList.add(
             Pair(Offset(x1, y1), Offset(x1, y2))

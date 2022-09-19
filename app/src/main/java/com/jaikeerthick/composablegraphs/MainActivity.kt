@@ -113,18 +113,18 @@ class MainActivity : ComponentActivity() {
                         style = style,
                         decorations = listOf()
                     )
-//
-//                    DoublePointGraph(
-//                        dataList = listOf(Pair(3, 7), Pair(5, 10), Pair(11, 23), Pair(13, 17), Pair(0, 5)),
-//                        style = style,
-//                        decorations = listOf(
+
+                    DoublePointGraph(
+                        dataList = listOf(Pair(3, 7), Pair(5, 10), Pair(11, 25), Pair(13, 17), Pair(0, 5)),
+                        style = style,
+                        decorations = listOf(
 //                            VerticalGridLines(),
 //                            HorizontalGridLines(),
 //                            BackgroundHighlight(7f, 12f, DeepPurple.copy(0.2f)),
 //                            HorizontalLine(7f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
 //                            HorizontalLine(12f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
-//                        )
-//                    )
+                        )
+                    )
 
 
                 }

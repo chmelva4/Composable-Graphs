@@ -17,6 +17,7 @@ import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
 import com.jaikeerthick.composable_graphs.charts.drawPaddings
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
 
 /**
@@ -59,7 +60,7 @@ fun DoublePointChart(
 
             val maxList = dataList.map { it.second }
             val yAxisLabels = YAxisLabels.fromGraphInputs(maxList, style.yAxisTextColor, style.yAxisLabelsPosition)
-            val presentXAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(maxList)
+            val presentXAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(maxList, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
             val basicDrawer = BasicChartDrawer(
                 this,
                 size,

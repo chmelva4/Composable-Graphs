@@ -22,6 +22,7 @@ import com.jaikeerthick.composable_graphs.color.Gradient2
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
 
 @Composable
@@ -82,7 +83,7 @@ fun BarChart(
         ) {
 
             val yAxisLabels = YAxisLabels.fromGraphInputs(dataList, style.yAxisTextColor, style.yAxisLabelsPosition)
-            val presentXAxisLabels = xAxisLabels?: XAxisLabels.createDefault(dataList)
+            val presentXAxisLabels = xAxisLabels?: XAxisLabels.createDefault(dataList, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
             val basicDrawer = BasicChartDrawer(
                 this,
                 size,

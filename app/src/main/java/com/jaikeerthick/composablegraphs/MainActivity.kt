@@ -30,6 +30,7 @@ import com.jaikeerthick.composable_graphs.decorations.HorizontalLine
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLineStyle
 import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
 
 class MainActivity : ComponentActivity() {
@@ -85,11 +86,14 @@ class MainActivity : ComponentActivity() {
 
                     BarChart(
                         dataList = listOf(10, 23, 50, 12, 66, 78) ,
-                        style = BarChartStyle(),
+                        style = BarChartStyle(canvasPaddingValues = PaddingValues(start = 20.dp, top = 5.dp, end = 20.dp, bottom = 20.dp)),
                         decorations = listOf(
                             VerticalGridLines(),
                             HorizontalGridLines(),
-                        )
+                        ),
+                        xAxisLabels = XAxisLabels(listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun").map {
+                            GraphData.String(it)
+                        }, XAxisLabelsPosition.TOP)
                     )
 
                     DoublePointChart(

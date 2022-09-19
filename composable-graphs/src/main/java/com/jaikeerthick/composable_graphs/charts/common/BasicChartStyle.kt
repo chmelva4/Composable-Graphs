@@ -20,7 +20,7 @@ open class BasicChartStyle(
     val isHeaderVisible: Boolean = false,
 
     val backgroundColor: Color = Color.Transparent,
-    val xAxisTextColor: Int = android.graphics.Color.GRAY,
+    val xAxisTextColor: Int = android.graphics.Color.BLACK,
     val yAxisTextColor: Int = android.graphics.Color.BLACK,
 
     val yAxisLabelsPosition: YAxisLabelsPosition = YAxisLabelsPosition.LEFT

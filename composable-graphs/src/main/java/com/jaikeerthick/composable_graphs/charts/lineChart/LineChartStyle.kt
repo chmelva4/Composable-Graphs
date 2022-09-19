@@ -22,7 +22,7 @@ class LineChartStyle(
     isXAxisLabelVisible: Boolean = true,
     isHeaderVisible: Boolean = false,
     backgroundColor: Color = Color.Transparent,
-    xAxisTextColor: Int = android.graphics.Color.GRAY,
+    xAxisTextColor: Int = android.graphics.Color.BLACK,
     yAxisTextColor: Int = android.graphics.Color.BLACK,
     yAxisLabelsPosition: YAxisLabelsPosition = YAxisLabelsPosition.LEFT,
 

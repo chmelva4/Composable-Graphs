@@ -9,19 +9,17 @@ import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
 import com.jaikeerthick.composable_graphs.charts.common.GraphData
 
-enum class xAxisLabelsPosition {
-    TOP, BOTTOM
-}
+
 
 data class XAxisLabels(
     val labels: List<GraphData>,
-    val position: xAxisLabelsPosition = xAxisLabelsPosition.BOTTOM,
+    val position: XAxisLabelsPosition = XAxisLabelsPosition.BOTTOM,
     val color: Int = Color.Black.toArgb(),
 ): CanvasDrawable {
 
     companion object {
-        fun createDefault(data: List<Number>): XAxisLabels {
-            return XAxisLabels(data.mapIndexed {idx, _ -> GraphData.Number(idx + 1)})
+        fun createDefault(data: List<Number>, position: XAxisLabelsPosition, color: Int): XAxisLabels {
+            return XAxisLabels(data.mapIndexed {idx, _ -> GraphData.Number(idx + 1)}, position, color)
         }
     }
 
@@ -32,14 +30,20 @@ data class XAxisLabels(
     }
 }
 
+enum class XAxisLabelsPosition {
+    TOP, BOTTOM
+}
+
 fun DrawScope.drawXAxisLabels(labels: XAxisLabels, basicChartDrawer: BasicChartDrawer) {
 
     labels.labels.forEachIndexed {idx, label ->
 
+        val y = if (labels.position == XAxisLabelsPosition.BOTTOM) basicChartDrawer.canvasSize.height.toFloat() else 0f
+
         drawContext.canvas.nativeCanvas.drawText(
             label.text,
             (basicChartDrawer.xItemSpacing * (idx)) + basicChartDrawer.xLabelOffset + basicChartDrawer.paddingLeftPx, // x
-            size.height, // y
+            y, // y
             Paint().apply {
                 color = labels.color
                 textAlign = Paint.Align.CENTER

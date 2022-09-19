@@ -30,7 +30,7 @@ open class BasicChartDrawer(
         get() = gridWidth / if (dataList.isNotEmpty()) dataList.size else 1
 
     val yItemSpacing: Float
-        get() = gridHeight / if (yAxisLabels.labels.isNotEmpty()) yAxisLabels.labels.size else 1
+        get() = gridHeight / if (yAxisLabels.labels.isNotEmpty()) yAxisLabels.labels.size - 1 else 1
 
     val verticalStep: Float
         get() = GraphHelper.getAbsoluteMax(dataList).toFloat() / if (dataList.isNotEmpty()) dataList.size.toFloat() else 1f

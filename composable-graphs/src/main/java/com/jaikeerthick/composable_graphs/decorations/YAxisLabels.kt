@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.composables.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.composables.chartYtoCanvasY
 import com.jaikeerthick.composable_graphs.helper.GraphHelper
 import kotlin.math.roundToInt
 
@@ -31,21 +32,21 @@ data class YAxisLabels(
 
     override fun drawToCanvas(basicChartDrawer: BasicChartDrawer) {
         basicChartDrawer.scope.drawYAxisLabels(
-            this, basicChartDrawer.yItemSpacing, basicChartDrawer.gridHeight, color
+            this, basicChartDrawer
         )
     }
 }
 
-fun DrawScope.drawYAxisLabels(labels: YAxisLabels, yItemSpacing: Float, gridHeight: Float, textColor: Int) {
+fun DrawScope.drawYAxisLabels(labels: YAxisLabels, basicChartDrawer: BasicChartDrawer) {
 
     labels.labels.forEachIndexed {idx, label ->
 
         drawContext.canvas.nativeCanvas.drawText(
             label,
-            size.width, //x
-            gridHeight - yItemSpacing * (idx + 0), //y
+            basicChartDrawer.paddingLeftPx + basicChartDrawer.gridWidth,
+            chartYtoCanvasY(basicChartDrawer.yItemSpacing * idx, basicChartDrawer), //y
             Paint().apply {
-                color = textColor
+                color = labels.color
                 textAlign = Paint.Align.CENTER
                 textSize = 12.sp.toPx()
             }

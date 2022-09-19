@@ -26,7 +26,7 @@ fun DrawScope.drawHorizontalGridLines(gridLines: HorizontalGridLines, basicChart
         drawLine(
             color = gridLines.color,
             start = Offset(chartXToCanvasX(0f, basicChartDrawer), chartYtoCanvasY(basicChartDrawer.yItemSpacing * i, basicChartDrawer)),
-            end = Offset(chartXToCanvasX(basicChartDrawer.gridWidth, basicChartDrawer), chartYtoCanvasY(basicChartDrawer.yItemSpacing * i, basicChartDrawer)),
+            end = Offset(basicChartDrawer.gridWidth, chartYtoCanvasY(basicChartDrawer.yItemSpacing * i, basicChartDrawer)),
             strokeWidth = gridLines.heightPx.toFloat()
         )
     }

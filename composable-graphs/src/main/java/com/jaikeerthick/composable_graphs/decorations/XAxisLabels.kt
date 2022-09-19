@@ -27,21 +27,21 @@ data class XAxisLabels(
 
     override fun drawToCanvas(basicChartDrawer: BasicChartDrawer) {
         basicChartDrawer.scope.drawXAxisLabels(
-            this, basicChartDrawer.xItemSpacing, basicChartDrawer.xLabelOffset, color
+            this, basicChartDrawer
         )
     }
 }
 
-fun DrawScope.drawXAxisLabels(labels: XAxisLabels, xItemSpacing: Float, xLabelOffset: Float, textColor: Int) {
+fun DrawScope.drawXAxisLabels(labels: XAxisLabels, basicChartDrawer: BasicChartDrawer) {
 
     labels.labels.forEachIndexed {idx, label ->
 
         drawContext.canvas.nativeCanvas.drawText(
             label.text,
-            (xItemSpacing * (idx)) + xLabelOffset, // x
+            (basicChartDrawer.xItemSpacing * (idx)) + basicChartDrawer.xLabelOffset + basicChartDrawer.paddingLeftPx, // x
             size.height, // y
             Paint().apply {
-                color = textColor
+                color = labels.color
                 textAlign = Paint.Align.CENTER
                 textSize = 12.sp.toPx()
             }

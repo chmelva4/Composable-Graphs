@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
@@ -22,7 +21,7 @@ import com.jaikeerthick.composable_graphs.style.BarGraphStyle
 @Composable
 fun DoublePointGraph(
     dataList: List<Pair<Number, Number>>,
-    xAxisData: XAxisLabels? = null,
+    xAxisLabels: XAxisLabels? = null,
     header: @Composable() () -> Unit = {},
     style: BarGraphStyle = BarGraphStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
@@ -56,7 +55,7 @@ fun DoublePointGraph(
 
             val maxList = dataList.map { it.second }
             val yAxisLabels = YAxisLabels.fromGraphInputs(maxList)
-            val presentXAxisData = xAxisData ?: XAxisLabels.createDefault(maxList)
+            val presentXAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(maxList)
             val basicDrawer = BasicChartDrawer(
                 this,
                 size,
@@ -64,13 +63,14 @@ fun DoublePointGraph(
                 20.dp.toPx(),
                 0.dp.toPx(),
                 20.dp.toPx(),
+                presentXAxisLabels,
                 yAxisLabels,
                 maxList,
                 0f
             )
 
 
-            presentXAxisData.drawToCanvas(basicDrawer)
+            presentXAxisLabels.drawToCanvas(basicDrawer)
 
             yAxisLabels.drawToCanvas(basicDrawer)
 

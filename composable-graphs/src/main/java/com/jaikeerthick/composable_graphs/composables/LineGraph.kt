@@ -23,7 +23,7 @@ import kotlin.math.sqrt
 
 @Composable
 fun LineGraph(
-    xAxisData: XAxisLabels? = null,
+    xAxisLabels: XAxisLabels? = null,
     yAxisData: List<Number>,
     header: @Composable() () -> Unit = {},
     style: LineGraphStyle = LineGraphStyle(),
@@ -34,7 +34,7 @@ fun LineGraph(
     val offsetList = remember{ mutableListOf<Offset>() }
     val isPointClicked = remember { mutableStateOf(false) }
     val clickedPoint: MutableState<Offset?> = remember { mutableStateOf(null) }
-    val presentXAxisLabels: XAxisLabels = xAxisData ?: XAxisLabels.createDefault(yAxisData)
+    val presentXAxisLabels: XAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(yAxisData)
 
 
 
@@ -114,6 +114,7 @@ fun LineGraph(
                 20.dp.toPx(),
                 0.dp.toPx(),
                 20.dp.toPx(),
+                presentXAxisLabels,
                 yAxisLabels,
                 yAxisData,
                 0f
@@ -134,7 +135,7 @@ fun LineGraph(
             )
 
             paintGradientUnderTheGraphLine(
-                this, offsetList, yAxisData, basicDrawer.gridHeight, basicDrawer.xItemSpacing, style.colors.fillGradient
+                this, offsetList, yAxisData, basicDrawer, style.colors.fillGradient
             )
 
             drawLineConnectingPoints(this, offsetList, style.colors.lineColor, 2.dp.toPx())
@@ -194,8 +195,7 @@ private fun paintGradientUnderTheGraphLine(
     scope: DrawScope,
     offsetList: MutableList<Offset>,
     yAxisData: List<Number>,
-    gridHeight: Float,
-    xItemSpacing: Float,
+    basicChartDrawer: BasicChartDrawer,
     fillBrush: Brush?
 ) {
     /**
@@ -206,22 +206,23 @@ private fun paintGradientUnderTheGraphLine(
     val path = Path().apply {
         // starting point for gradient
         moveTo(
-            x = 0f,
-            y = gridHeight
+            x = chartXToCanvasX(0f, basicChartDrawer),
+            y = chartYtoCanvasY(0f, basicChartDrawer)
         )
 
         offsetList.forEach { offset -> lineTo(offset.x, offset.y) }
 
-        // ending point for gradient
+//         ending point for gradient
         lineTo(
-            x = xItemSpacing * (yAxisData.size - 1),
-            y = gridHeight
+            x = offsetList.last().x,
+            y = chartYtoCanvasY(0f, basicChartDrawer)
         )
 
     }
 
     scope.drawPath(
         path = path,
+//        color = Color.Red
         brush = fillBrush ?: Brush.verticalGradient(
             listOf(Color.Transparent, Color.Transparent)
         )

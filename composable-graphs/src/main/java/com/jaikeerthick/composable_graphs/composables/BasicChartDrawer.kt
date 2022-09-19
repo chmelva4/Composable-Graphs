@@ -15,6 +15,7 @@ class BasicChartDrawer(
     val paddingRightPx: Float,
     val paddingTopPx: Float,
     val paddingBottomPx: Float,
+    val xAxisLabels: XAxisLabels,
     val yAxisLabels: YAxisLabels,
     val dataList: List<Number>,
     val xLabelOffset: Float,

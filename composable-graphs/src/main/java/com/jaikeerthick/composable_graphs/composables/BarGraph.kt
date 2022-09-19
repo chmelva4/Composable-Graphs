@@ -42,7 +42,8 @@ fun BarGraph(
     Column(
         modifier = Modifier
             .background(
-                color = style.colors.backgroundColor
+//                color = style.colors.backgroundColor
+            Color.LightGray
             )
             .fillMaxWidth()
             .padding(style.paddingValues)
@@ -86,7 +87,7 @@ fun BarGraph(
 
             val yAxisLabels = YAxisLabels.fromGraphInputs(dataList)
             val presentXAxisLabels = xAxisLabels?: XAxisLabels.createDefault(dataList)
-            val basicDrawer = BasicChartDrawer(
+            val basicDrawer = object : BasicChartDrawer(
                 this,
                 size,
                 20.dp.toPx(),
@@ -98,7 +99,13 @@ fun BarGraph(
                 dataList,
                 // xItemSpacing /2
                 size.width / safeSize / 2
-            )
+            ) {
+                override val xItemSpacing: Float
+                    get() = gridWidth / if (dataList.isNotEmpty()) dataList.size else 1
+            }
+
+            drawPaddings(basicDrawer)
+
 
 
             presentXAxisLabels.drawToCanvas(basicDrawer)
@@ -133,7 +140,7 @@ private fun constructGraph(
     barOffsetList.clear()
     for (i in dataList.indices) {
 
-        val x1 = chartXToCanvasX(basicChartDrawer.xItemSpacing * i, basicChartDrawer)
+        val x1 = chartXToCanvasX(i.toFloat(), basicChartDrawer)
         val y1 = chartYtoCanvasY(dataList[i].toFloat(), basicChartDrawer)
 
         barOffsetList.add(
@@ -143,7 +150,7 @@ private fun constructGraph(
                     y = y1
                 ),
                 second = Offset(
-                    x = chartXToCanvasX(basicChartDrawer.xItemSpacing * (i + 1), basicChartDrawer),
+                    x = chartXToCanvasX((i + 1).toFloat(), basicChartDrawer),
                     y = y1
                 ),
             )

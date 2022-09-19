@@ -8,7 +8,7 @@ import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
 import com.jaikeerthick.composable_graphs.helper.GraphHelper
 
-class BasicChartDrawer(
+open class BasicChartDrawer(
     val scope: DrawScope,
     val canvasSize: Size,
     val paddingLeftPx: Float,
@@ -27,7 +27,7 @@ class BasicChartDrawer(
     val gridHeight: Float
         get() = canvasSize.height - paddingTopPx - paddingBottomPx
 
-    val xItemSpacing: Float
+    open val xItemSpacing: Float
         get() = gridWidth / if (dataList.isNotEmpty()) dataList.size else 1
 
     val yItemSpacing: Float

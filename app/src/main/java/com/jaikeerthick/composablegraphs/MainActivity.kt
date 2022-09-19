@@ -109,7 +109,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     BarGraph(
-                        dataList = listOf(10, 23, 50, 12, 66) ,
+                        dataList = listOf(10, 23, 50, 12, 66, 78) ,
                         style = style,
                         decorations = listOf()
                     )

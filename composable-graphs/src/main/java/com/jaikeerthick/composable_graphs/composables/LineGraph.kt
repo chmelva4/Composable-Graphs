@@ -120,6 +120,8 @@ fun LineGraph(
                 0f
             )
 
+            drawPaddings(basicDrawer)
+
             presentXAxisLabels.drawToCanvas(basicDrawer)
             yAxisLabels.drawToCanvas(basicDrawer)
 

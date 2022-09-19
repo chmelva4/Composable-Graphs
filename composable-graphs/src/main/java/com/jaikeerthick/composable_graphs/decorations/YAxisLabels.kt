@@ -46,7 +46,7 @@ fun DrawScope.drawYAxisLabels(labels: YAxisLabels, basicChartDrawer: BasicChartD
 
         drawContext.canvas.nativeCanvas.drawText(
             label,
-            basicChartDrawer.paddingLeftPx + basicChartDrawer.gridWidth,
+            basicChartDrawer.canvasSize.width,
             chartYtoCanvasY(label.toFloat(), basicChartDrawer), //y
             Paint().apply {
                 color = labels.color

@@ -124,9 +124,9 @@ class MainActivity : ComponentActivity() {
                         decorations = listOf(
                             VerticalGridLines(),
                             HorizontalGridLines(),
-//                            BackgroundHighlight(7f, 12f, DeepPurple.copy(0.2f)),
-//                            HorizontalLine(7f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
-//                            HorizontalLine(12f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
+                            BackgroundHighlight(7f, 12f, DeepPurple.copy(0.2f)),
+                            HorizontalLine(7f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
+                            HorizontalLine(12f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
                         )
                     )
 

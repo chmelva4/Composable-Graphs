@@ -29,8 +29,8 @@ fun DrawScope.drawHorizontalLine(
 
     drawLine(
         color = line.color,
-        start = Offset(chartXToCanvasX(0f, basicChartDrawer), chartYtoCanvasY(line.y, basicChartDrawer)),
-        end = Offset(basicChartDrawer.gridWidth, chartYtoCanvasY(line.y, basicChartDrawer)),
+        start = Offset(basicChartDrawer.paddingLeftPx, chartYtoCanvasY(line.y, basicChartDrawer)),
+        end = Offset(basicChartDrawer.paddingLeftPx + basicChartDrawer.gridWidth, chartYtoCanvasY(line.y, basicChartDrawer)),
         strokeWidth = line.widthPx,
         pathEffect = pathEffect
     )

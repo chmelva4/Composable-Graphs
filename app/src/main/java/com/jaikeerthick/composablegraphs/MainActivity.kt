@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.color.*
 import com.jaikeerthick.composable_graphs.charts.BarChart
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
@@ -109,10 +110,15 @@ class MainActivity : ComponentActivity() {
                             BackgroundHighlight(7f, 12f, DeepPurple.copy(0.2f)),
                             HorizontalLine(7f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
                             HorizontalLine(12f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
-                            Label("Chart Pos", LabelXPosition.ChartPosition(1.5f), LabelYPosition.ChartPosition(7f), Color.Green.copy(0.35f)),
-                            Label("Can Pos", LabelXPosition.CanvasPosition(200f), LabelYPosition.CanvasPosition(200f), Color.Green.copy(0.35f)),
-                            Label("12", LabelXPosition.PaddingPosition(PaddingPositionType.LEFT), LabelYPosition.ChartPosition(12f), Color.Green.copy(0.35f)),
-                            Label("14", LabelXPosition.PaddingPosition(PaddingPositionType.RIGHT), LabelYPosition.ChartPosition(14f), Color.Green.copy(0.35f)),
+                            Label(
+                                "12",
+                                LabelXPosition.PaddingPosition(PaddingPositionType.LEFT),
+                                LabelYPosition.ChartPosition(12f),
+                                Color.Green.copy(0.35f),
+                                PaddingValues(horizontal = 0.dp, vertical = 10.dp),
+                                textSize = 16.sp
+                            ),
+                            Label("7", LabelXPosition.PaddingPosition(PaddingPositionType.RIGHT), LabelYPosition.ChartPosition(7f), Color.Green.copy(0.8f)),
                         )
                     )
 

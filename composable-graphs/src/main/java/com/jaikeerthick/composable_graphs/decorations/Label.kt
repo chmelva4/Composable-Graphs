@@ -1,13 +1,21 @@
+@file:OptIn(ExperimentalUnitApi::class)
+
 package com.jaikeerthick.composable_graphs.decorations
 
 import android.graphics.Paint
 import android.graphics.Rect
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.ExperimentalUnitApi
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
 import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
@@ -17,8 +25,10 @@ class Label(
     val text: String,
     val xPosition: LabelXPosition,
     val yPosition: LabelYPosition,
-    val backgroundColor: Color,
+    val backgroundColor: Color = Color.Transparent,
+    val padding: PaddingValues = PaddingValues(Dp(4f)),
     val textColor: Int = Color.Black.toArgb(),
+    val textSize: TextUnit = TextUnit(12f, TextUnitType.Sp),
 ): CanvasDrawable
 {
     override fun drawToCanvas(basicChartDrawer: BasicChartDrawer) {
@@ -40,25 +50,32 @@ fun DrawScope.drawLabel(label: Label, basicChartDrawer: BasicChartDrawer) {
     textPaint.apply {
         color = label.textColor
         textAlign = align
-        textSize = 12.sp.toPx()
+        textSize = label.textSize.toPx()
     }
 
     val textBounds = Rect()
     textPaint.getTextBounds(label.text, 0, label.text.length, textBounds)
 
-    val rectTop = label.yPosition.getYValue(basicChartDrawer) - (textBounds.height() / 2) - 10
+    val rectTop = label.yPosition.getYValue(basicChartDrawer) - textBounds.height() / 2 - label.padding.calculateTopPadding().toPx()
     val rectLeft = when(label.xPosition) {
         is LabelXPosition.PaddingPosition -> when(label.xPosition.type) {
-            PaddingPositionType.LEFT -> label.xPosition.getXValue(basicChartDrawer) - 10
-            else -> label.xPosition.getXValue(basicChartDrawer) - textBounds.width() - 10
+            PaddingPositionType.LEFT -> label.xPosition.getXValue(basicChartDrawer) - label.padding.calculateLeftPadding(LayoutDirection.Ltr).toPx()
+            else -> label.xPosition.getXValue(basicChartDrawer) - textBounds.width() - label.padding.calculateLeftPadding(LayoutDirection.Ltr).toPx()
         }
-        else -> label.xPosition.getXValue(basicChartDrawer) - textBounds.exactCenterX() - 10
+        else -> label.xPosition.getXValue(basicChartDrawer) - textBounds.exactCenterX() - label.padding.calculateLeftPadding(LayoutDirection.Ltr).toPx()
     }
 
     drawRect(
         label.backgroundColor,
         Offset(rectLeft, rectTop),
-        Size(textBounds.width().toFloat() + 20, textBounds.height().toFloat() + 20)
+        Size(
+            textBounds.width().toFloat()
+                    + label.padding.calculateLeftPadding(LayoutDirection.Ltr).toPx()
+                    + label.padding.calculateRightPadding(LayoutDirection.Ltr).toPx(),
+            textBounds.height().toFloat()
+                    + label.padding.calculateTopPadding().toPx()
+                    + label.padding.calculateBottomPadding().toPx()
+        )
     )
 
     drawContext.canvas.nativeCanvas.drawText(

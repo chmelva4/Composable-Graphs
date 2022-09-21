@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.color.*
 import com.jaikeerthick.composable_graphs.charts.BarChart
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
@@ -28,6 +29,10 @@ import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
 import com.jaikeerthick.composable_graphs.decorations.HorizontalGridLines
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLine
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLineStyle
+import com.jaikeerthick.composable_graphs.decorations.Label
+import com.jaikeerthick.composable_graphs.decorations.LabelXPosition
+import com.jaikeerthick.composable_graphs.decorations.LabelYPosition
+import com.jaikeerthick.composable_graphs.decorations.PaddingPositionType
 import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
@@ -105,6 +110,13 @@ class MainActivity : ComponentActivity() {
                             BackgroundHighlight(7f, 12f, DeepPurple.copy(0.2f)),
                             HorizontalLine(7f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
                             HorizontalLine(12f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
+                            Label(
+                                "12",
+                                LabelXPosition.PaddingPosition(PaddingPositionType.LEFT),
+                                LabelYPosition.ChartPosition(12f),
+                                Color.Green.copy(0.35f),
+                            ),
+                            Label("7", LabelXPosition.PaddingPosition(PaddingPositionType.RIGHT), LabelYPosition.ChartPosition(7f), Color.Green.copy(0.8f)),
                         )
                     )
 

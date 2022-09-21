@@ -28,6 +28,10 @@ import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
 import com.jaikeerthick.composable_graphs.decorations.HorizontalGridLines
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLine
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLineStyle
+import com.jaikeerthick.composable_graphs.decorations.Label
+import com.jaikeerthick.composable_graphs.decorations.LabelXPosition
+import com.jaikeerthick.composable_graphs.decorations.LabelYPosition
+import com.jaikeerthick.composable_graphs.decorations.PaddingPositionType
 import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
@@ -105,6 +109,10 @@ class MainActivity : ComponentActivity() {
                             BackgroundHighlight(7f, 12f, DeepPurple.copy(0.2f)),
                             HorizontalLine(7f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
                             HorizontalLine(12f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
+                            Label("Chart Pos", LabelXPosition.ChartPosition(1.5f), LabelYPosition.ChartPosition(7f), Color.Green.copy(0.35f)),
+                            Label("Can Pos", LabelXPosition.CanvasPosition(200f), LabelYPosition.CanvasPosition(200f), Color.Green.copy(0.35f)),
+                            Label("12", LabelXPosition.PaddingPosition(PaddingPositionType.LEFT), LabelYPosition.ChartPosition(12f), Color.Green.copy(0.35f)),
+                            Label("14", LabelXPosition.PaddingPosition(PaddingPositionType.RIGHT), LabelYPosition.ChartPosition(14f), Color.Green.copy(0.35f)),
                         )
                     )
 

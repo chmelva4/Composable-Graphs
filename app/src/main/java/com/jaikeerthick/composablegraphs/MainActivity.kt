@@ -115,8 +115,6 @@ class MainActivity : ComponentActivity() {
                                 LabelXPosition.PaddingPosition(PaddingPositionType.LEFT),
                                 LabelYPosition.ChartPosition(12f),
                                 Color.Green.copy(0.35f),
-                                PaddingValues(horizontal = 0.dp, vertical = 10.dp),
-                                textSize = 16.sp
                             ),
                             Label("7", LabelXPosition.PaddingPosition(PaddingPositionType.RIGHT), LabelYPosition.ChartPosition(7f), Color.Green.copy(0.8f)),
                         )

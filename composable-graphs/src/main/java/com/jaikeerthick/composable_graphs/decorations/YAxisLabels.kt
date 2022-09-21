@@ -1,6 +1,7 @@
 package com.jaikeerthick.composable_graphs.decorations
 
 import android.graphics.Paint
+import android.graphics.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
@@ -42,22 +43,28 @@ enum class YAxisLabelsPosition {LEFT, RIGHT}
 
 fun DrawScope.drawYAxisLabels(labels: YAxisLabels, basicChartDrawer: BasicChartDrawer) {
 
+    val x = if (labels.position == YAxisLabelsPosition.LEFT) 0 else basicChartDrawer.canvasSize.width
+    val align = if (labels.position == YAxisLabelsPosition.LEFT) Paint.Align.LEFT else Paint.Align.RIGHT
+
+    val textPaint = Paint()
+    textPaint.apply {
+        color = labels.color
+        textAlign = align
+        textSize = 12.sp.toPx()
+    }
+
     labels.labels.forEachIndexed {idx, label ->
 
 //        Log.d("DECORATION", "draw y label val: $label locaction x: ${basicChartDrawer.paddingLeftPx + basicChartDrawer.gridWidth} y: ${basicChartDrawer.yItemSpacing * idx}")
 
-        val x = if (labels.position == YAxisLabelsPosition.LEFT) 0 else basicChartDrawer.canvasSize.width
-        val align = if (labels.position == YAxisLabelsPosition.LEFT) Paint.Align.LEFT else Paint.Align.RIGHT
+        val textBounds = Rect()
+        textPaint.getTextBounds(label, 0, label.length, textBounds)
 
         drawContext.canvas.nativeCanvas.drawText(
             label,
             x.toFloat(),
-            chartYtoCanvasY(label.toFloat(), basicChartDrawer), //y
-            Paint().apply {
-                color = labels.color
-                textAlign = align
-                textSize = 12.sp.toPx()
-            }
+            chartYtoCanvasY(label.toFloat(), basicChartDrawer) - textBounds.exactCenterY(), //y
+            textPaint
         )
 
     }

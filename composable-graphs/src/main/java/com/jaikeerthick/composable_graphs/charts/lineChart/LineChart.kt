@@ -10,10 +10,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
@@ -34,7 +35,7 @@ fun LineChart(
     header: @Composable() () -> Unit = {},
     style: LineChartStyle = LineChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
-    dataPointStyles: Map<Int, LineChartColors> = emptyMap(),
+    dataPointStyles: Map<Int, LineChartDataPointStyle> = emptyMap(),
     onPointClicked: (pair: Pair<Any,Any>) -> Unit = {},
 ) {
 
@@ -42,6 +43,8 @@ fun LineChart(
     val isPointClicked = remember { mutableStateOf(false) }
     val clickedPoint: MutableState<Offset?> = remember { mutableStateOf(null) }
     val presentXAxisLabels: XAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(yAxisData, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
+
+    val currentDensity = LocalDensity.current
 
 
 
@@ -146,19 +149,19 @@ fun LineChart(
                 this, offsetList, yAxisData, basicDrawer, style.fillGradient
             )
 
-            drawLineConnectingPoints(this, offsetList, style.lineColor, 2.dp.toPx())
+            drawLineConnectingPoints(this, offsetList, style.lineColor, style.lineWidth.toPx())
 
 
-            drawPoints(this, offsetList, dataPointStyles, style.defaultColors, 5.dp.toPx())
+            drawPoints(this, offsetList, dataPointStyles, style.defaultDataPointStyle, currentDensity)
 
             drawHighlightedPointAndCrossHair(
                 this,
                 clickedPoint,
                 style.clickHighlightColor,
-                12.dp.toPx(),
+                style.clickHighlightRadius.toPx(),
                 style.isCrossHairVisible,
                 style.crossHairColor,
-                2.dp.toPx(),
+                style.crossHairLineWidth.toPx(),
                 basicDrawer.gridHeight
             )
 
@@ -195,16 +198,18 @@ private fun constructOffsetList(
 private fun drawPoints(
     scope: DrawScope,
     offsetList: MutableList<Offset>,
-    dataPointStyles: Map<Int, LineChartColors>,
-    defaultStyle: LineChartColors,
-    pointRadiusPx: Float
+    dataPointStyles: Map<Int, LineChartDataPointStyle>,
+    defaultStyle: LineChartDataPointStyle,
+    currentDensity: Density,
 ) {
     offsetList.forEachIndexed { idx, offset ->
         val style = dataPointStyles.getOrElse(idx) {defaultStyle}
 
+        val radiusPx = with(currentDensity) {style.pointRadius.toPx()}
+
         scope.drawCircle(
             color = style.pointColor,
-            radius = pointRadiusPx,
+            radius = radiusPx,
             center = offset
         )
     }

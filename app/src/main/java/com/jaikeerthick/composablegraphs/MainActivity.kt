@@ -58,20 +58,22 @@ class MainActivity : ComponentActivity() {
 
                         val clickedValue: MutableState<Pair<Any,Any>?> = remember{ mutableStateOf(null) }
 
+                        val complementColor = LineChartColors(Color(206, 26, 54).copy(alpha = 0.3f))
+
                         LineChart(
                             xAxisLabels = XAxisLabels(listOf("Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat").map {
                                 GraphData.String(it)
                             }),
                             yAxisData = listOf(200, 40, 60, 450, 700, 30, 50),
-                            style = LineChartStyle(canvasPaddingValues = PaddingValues(20.dp)),
+                            style = LineChartStyle(canvasPaddingValues = PaddingValues(20.dp), defaultColors = LineChartColors(Color(192, 26, 206))),
                             decorations = listOf(
                                 VerticalGridLines(),
                                 HorizontalGridLines(),
-//                                HorizontalGridLines(),
-//                                BackgroundHighlight(100f, 300f, DeepPurple.copy(0.2f))
+                                //                                HorizontalGridLines(),
+                                //                                BackgroundHighlight(100f, 300f, DeepPurple.copy(0.2f))
                             ),
+                            dataPointStyles = mapOf(1 to complementColor, 3 to complementColor),
                             onPointClicked = {
-                                clickedValue.value = it
                             }
                         )
 
@@ -150,18 +152,22 @@ fun BarChartPreview() {
 @Preview("LineChartPreview", widthDp = 300, heightDp = 300, showBackground = true)
 @Composable()
 fun LineChartPreview() {
+
+    val complementColor = LineChartColors(Color(206, 26, 54))
+
     LineChart(
         xAxisLabels = XAxisLabels(listOf("Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat").map {
             GraphData.String(it)
         }),
         yAxisData = listOf(200, 40, 60, 450, 700, 30, 50),
-        style = LineChartStyle(canvasPaddingValues = PaddingValues(20.dp)),
+        style = LineChartStyle(canvasPaddingValues = PaddingValues(20.dp), defaultColors = LineChartColors(Color(192, 26, 206))),
         decorations = listOf(
             VerticalGridLines(),
             HorizontalGridLines(),
             //                                HorizontalGridLines(),
             //                                BackgroundHighlight(100f, 300f, DeepPurple.copy(0.2f))
         ),
+        dataPointStyles = mapOf(1 to complementColor, 3 to complementColor),
         onPointClicked = {
         }
     )

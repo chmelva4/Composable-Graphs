@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
@@ -33,6 +34,7 @@ fun LineChart(
     header: @Composable() () -> Unit = {},
     style: LineChartStyle = LineChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
+    dataPointStyles: Map<Int, LineChartColors> = emptyMap(),
     onPointClicked: (pair: Pair<Any,Any>) -> Unit = {},
 ) {
 
@@ -66,6 +68,7 @@ fun LineChart(
                 .height(style.height)
                 .padding(horizontal = 1.dp)
                 .padding(top = 12.dp)
+                .graphicsLayer(alpha = 0.99f)
                 .pointerInput(true) {
 
                     detectTapGestures { p1: Offset ->
@@ -104,7 +107,9 @@ fun LineChart(
         ) {
 
 
-            //println("Entered scope")
+
+
+                //println("Entered scope")
             /**
              * xItemSpacing, yItemSpacing => space between each item that lies on the x and y axis
              * (size.width - 16.dp.toPx())
@@ -131,13 +136,10 @@ fun LineChart(
 
             decorations.forEach { it.drawToCanvas(basicDrawer) }
 
-            constructOffsetListAndDrawPoints(
-            this,
+            constructOffsetList(
                 offsetList,
                 yAxisData,
-               basicDrawer,
-                style.defaultColors.pointColor,
-                5.dp.toPx()
+                basicDrawer
             )
 
             paintGradientUnderTheGraphLine(
@@ -145,6 +147,9 @@ fun LineChart(
             )
 
             drawLineConnectingPoints(this, offsetList, style.lineColor, 2.dp.toPx())
+
+
+            drawPoints(this, offsetList, dataPointStyles, style.defaultColors, 5.dp.toPx())
 
             drawHighlightedPointAndCrossHair(
                 this,
@@ -167,20 +172,16 @@ fun LineChart(
 
 }
 
-private fun constructOffsetListAndDrawPoints(
-    scope: DrawScope,
+private fun constructOffsetList(
     offsetList: MutableList<Offset>,
     data: List<Number>,
     basicChartDrawer: BasicChartDrawer,
-    pointColor: Color,
-    pointRadiusPx: Float
 ) {
     offsetList.clear() // clearing list to avoid data duplication during recomposition
 
-    for (i in data.indices) {
-
-        val x1 = chartXToCanvasX(i.toFloat(), basicChartDrawer)
-        val y1 = chartYtoCanvasY(data[i].toFloat(), basicChartDrawer)
+    data.forEachIndexed { idx, dataPoint ->
+        val x1 = chartXToCanvasX(idx.toFloat(), basicChartDrawer)
+        val y1 = chartYtoCanvasY(dataPoint.toFloat(), basicChartDrawer)
 
         offsetList.add(
             Offset(
@@ -188,11 +189,23 @@ private fun constructOffsetListAndDrawPoints(
                 y = y1
             )
         )
+    }
+}
+
+private fun drawPoints(
+    scope: DrawScope,
+    offsetList: MutableList<Offset>,
+    dataPointStyles: Map<Int, LineChartColors>,
+    defaultStyle: LineChartColors,
+    pointRadiusPx: Float
+) {
+    offsetList.forEachIndexed { idx, offset ->
+        val style = dataPointStyles.getOrElse(idx) {defaultStyle}
 
         scope.drawCircle(
-            color = pointColor,
+            color = style.pointColor,
             radius = pointRadiusPx,
-            center = Offset(x1, y1)
+            center = offset
         )
     }
 }
@@ -234,6 +247,7 @@ private fun paintGradientUnderTheGraphLine(
 }
 
 private fun drawLineConnectingPoints(scope: DrawScope, offsetList: List<Offset>, lineColor: Color, lineWidth: Float) {
+
     /**
      * drawing line connecting all circles/points
      */
@@ -243,6 +257,7 @@ private fun drawLineConnectingPoints(scope: DrawScope, offsetList: List<Offset>,
         // Polygon mode draws the line that connects the points
         pointMode = PointMode.Polygon,
         strokeWidth = lineWidth,
+//        blendMode = BlendMode.DstOver
     )
 }
 

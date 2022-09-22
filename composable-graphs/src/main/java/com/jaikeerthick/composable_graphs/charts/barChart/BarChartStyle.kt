@@ -27,7 +27,7 @@ class BarChartStyle(
     yAxisTextColor: Int = android.graphics.Color.BLACK,
     yAxisLabelsPosition: YAxisLabelsPosition = YAxisLabelsPosition.LEFT,
 
-    val defaultColorStyle: BarChartColors = BarChartColors(),
+    val defaultDataPointStyle: BarChartDataPointStyle = BarChartDataPointStyle(),
     val clickHighlightColor: Color = PointHighlight,
 
 

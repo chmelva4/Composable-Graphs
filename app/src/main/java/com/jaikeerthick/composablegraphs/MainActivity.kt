@@ -15,12 +15,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.color.*
 import com.jaikeerthick.composable_graphs.charts.BarChart
-import com.jaikeerthick.composable_graphs.charts.barChart.BarChartColors
+import com.jaikeerthick.composable_graphs.charts.barChart.BarChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
+import com.jaikeerthick.composable_graphs.charts.barChart.BarWidth
 import com.jaikeerthick.composable_graphs.charts.doublePointChart.DoublePointChart
 import com.jaikeerthick.composable_graphs.charts.doublePointChart.DoublePointChartStyle
 import com.jaikeerthick.composable_graphs.charts.common.GraphData
@@ -54,6 +56,8 @@ class MainActivity : ComponentActivity() {
                         .background(color = Color.White),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+
+                    val barWidthDp = LocalDensity.current.run { 10.dp.toPx() }
 
                     Box(modifier = Modifier.fillMaxWidth()){
 
@@ -108,7 +112,10 @@ class MainActivity : ComponentActivity() {
                         xAxisLabels = XAxisLabels(listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun").map {
                             GraphData.String(it)
                         }, XAxisLabelsPosition.TOP),
-                        dataPointsStyles = mapOf(2 to BarChartColors(Brush.horizontalGradient(listOf(Color.Red, Color.Red))))
+                        dataPointsStyles = mapOf(
+                            2 to BarChartDataPointStyle(Brush.horizontalGradient(listOf(Color.Red, Color.Red)), BarWidth.PxWidth(barWidthDp)),
+                            4 to BarChartDataPointStyle(barWidth = BarWidth.PercentageWidth(0.5f))
+                        )
 
                     )
 

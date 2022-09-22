@@ -16,10 +16,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.jaikeerthick.composable_graphs.charts.barChart.BarChartColors
+import com.jaikeerthick.composable_graphs.charts.barChart.BarChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
-import com.jaikeerthick.composable_graphs.color.Gradient1
-import com.jaikeerthick.composable_graphs.color.Gradient2
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
@@ -33,7 +31,7 @@ fun BarChart(
     header: @Composable() () -> Unit = {},
     style: BarChartStyle = BarChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
-    dataPointsStyles: Map<Int, BarChartColors> = emptyMap(),
+    dataPointsStyles: Map<Int, BarChartDataPointStyle> = emptyMap(),
     onBarClicked: (value: Any) -> Unit = {},
 ) {
 
@@ -111,7 +109,7 @@ fun BarChart(
                 barOffsetList,
                 basicDrawer,
                 dataPointsStyles,
-                style.defaultColorStyle
+                style.defaultDataPointStyle
             )
 
             drawClickedRect(this, clickedBar, style.clickHighlightColor, basicDrawer)
@@ -127,8 +125,8 @@ private fun constructGraph(
     dataList: List<Number>,
     barOffsetList: MutableList<Pair<Offset, Offset>>,
     basicChartDrawer: BasicChartDrawer,
-    dataPointsStyles: Map<Int, BarChartColors>,
-    defaultColors: BarChartColors
+    dataPointsStyles: Map<Int, BarChartDataPointStyle>,
+    defaultDataPointStyle: BarChartDataPointStyle
 ) {
     barOffsetList.clear()
     for (i in dataList.indices) {
@@ -149,16 +147,19 @@ private fun constructGraph(
             )
         )
 
-        val brush = dataPointsStyles.getOrElse(i) {defaultColors}
+        val style = dataPointsStyles.getOrElse(i) {defaultDataPointStyle}
+
+        val x = style.barWidth.getLeftSideXCoordinate(chartXToCanvasX((i).toFloat(), basicChartDrawer), chartXToCanvasX((i + 1).toFloat(), basicChartDrawer))
+        val width = style.barWidth.getSize(chartXToCanvasX((i).toFloat(), basicChartDrawer), chartXToCanvasX((i + 1).toFloat(), basicChartDrawer))
 
         scope.drawRect(
-            brush = brush.fillGradient,
+            brush = style.fillGradient,
             topLeft = Offset(
-                x = x1,
+                x = x,
                 y = y1
             ),
             size = Size(
-                width = basicChartDrawer.xItemSpacing,
+                width = width,
                 height = basicChartDrawer.paddingTopPx +  basicChartDrawer.gridHeight - y1
             )
         )

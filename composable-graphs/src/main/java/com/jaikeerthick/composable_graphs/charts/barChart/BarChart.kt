@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.jaikeerthick.composable_graphs.charts.barChart.BarChartColors
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
 import com.jaikeerthick.composable_graphs.color.Gradient1
 import com.jaikeerthick.composable_graphs.color.Gradient2
@@ -32,6 +33,7 @@ fun BarChart(
     header: @Composable() () -> Unit = {},
     style: BarChartStyle = BarChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
+    dataPointsStyles: Map<Int, BarChartColors> = emptyMap(),
     onBarClicked: (value: Any) -> Unit = {},
 ) {
 
@@ -108,7 +110,8 @@ fun BarChart(
                 dataList,
                 barOffsetList,
                 basicDrawer,
-                style.defaultColorStyle.fillGradient
+                dataPointsStyles,
+                style.defaultColorStyle
             )
 
             drawClickedRect(this, clickedBar, style.clickHighlightColor, basicDrawer)
@@ -124,7 +127,8 @@ private fun constructGraph(
     dataList: List<Number>,
     barOffsetList: MutableList<Pair<Offset, Offset>>,
     basicChartDrawer: BasicChartDrawer,
-    barBrush: Brush
+    dataPointsStyles: Map<Int, BarChartColors>,
+    defaultColors: BarChartColors
 ) {
     barOffsetList.clear()
     for (i in dataList.indices) {
@@ -145,8 +149,10 @@ private fun constructGraph(
             )
         )
 
+        val brush = dataPointsStyles.getOrElse(i) {defaultColors}
+
         scope.drawRect(
-            brush = barBrush,
+            brush = brush.fillGradient,
             topLeft = Offset(
                 x = x1,
                 y = y1

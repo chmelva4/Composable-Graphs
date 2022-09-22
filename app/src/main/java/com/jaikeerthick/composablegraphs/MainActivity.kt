@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.color.*
 import com.jaikeerthick.composable_graphs.charts.BarChart
+import com.jaikeerthick.composable_graphs.charts.barChart.BarChartColors
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
 import com.jaikeerthick.composable_graphs.charts.doublePointChart.DoublePointChart
 import com.jaikeerthick.composable_graphs.charts.doublePointChart.DoublePointChartStyle
@@ -102,7 +103,9 @@ class MainActivity : ComponentActivity() {
                         ),
                         xAxisLabels = XAxisLabels(listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun").map {
                             GraphData.String(it)
-                        }, XAxisLabelsPosition.TOP)
+                        }, XAxisLabelsPosition.TOP),
+                        dataPointsStyles = mapOf(2 to BarChartColors(Brush.horizontalGradient(listOf(Color.Red, Color.Red))))
+
                     )
 
                     DoublePointChart(

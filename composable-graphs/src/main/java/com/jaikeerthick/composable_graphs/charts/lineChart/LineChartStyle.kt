@@ -29,12 +29,15 @@ class LineChartStyle(
 
     val isCrossHairVisible: Boolean = false,
     val lineColor: Color = GraphAccent,
+    val lineWidth: Dp = 2.dp,
     val clickHighlightColor: Color = PointHighlight,
+    val clickHighlightRadius: Dp = 12.dp,
     val crossHairColor: Color = Color.LightGray,
+    var crossHairLineWidth: Dp = 2.dp,
     val fillGradient: Brush = Brush.verticalGradient(
         listOf(Color.Transparent, Color.Transparent)
     ),
-    val defaultColors: LineChartColors = LineChartColors()
+    val defaultDataPointStyle: LineChartDataPointStyle = LineChartDataPointStyle()
 
 ): BasicChartStyle(
     paddingValues,

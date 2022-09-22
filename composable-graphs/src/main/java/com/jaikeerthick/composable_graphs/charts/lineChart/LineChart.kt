@@ -13,6 +13,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
@@ -33,6 +35,7 @@ fun LineChart(
     header: @Composable() () -> Unit = {},
     style: LineChartStyle = LineChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
+    dataPointStyles: Map<Int, LineChartDataPointStyle> = emptyMap(),
     onPointClicked: (pair: Pair<Any,Any>) -> Unit = {},
 ) {
 
@@ -40,6 +43,8 @@ fun LineChart(
     val isPointClicked = remember { mutableStateOf(false) }
     val clickedPoint: MutableState<Offset?> = remember { mutableStateOf(null) }
     val presentXAxisLabels: XAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(yAxisData, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
+
+    val currentDensity = LocalDensity.current
 
 
 
@@ -66,6 +71,7 @@ fun LineChart(
                 .height(style.height)
                 .padding(horizontal = 1.dp)
                 .padding(top = 12.dp)
+                .graphicsLayer(alpha = 0.99f)
                 .pointerInput(true) {
 
                     detectTapGestures { p1: Offset ->
@@ -104,7 +110,9 @@ fun LineChart(
         ) {
 
 
-            //println("Entered scope")
+
+
+                //println("Entered scope")
             /**
              * xItemSpacing, yItemSpacing => space between each item that lies on the x and y axis
              * (size.width - 16.dp.toPx())
@@ -131,29 +139,29 @@ fun LineChart(
 
             decorations.forEach { it.drawToCanvas(basicDrawer) }
 
-            constructOffsetListAndDrawPoints(
-            this,
+            constructOffsetList(
                 offsetList,
                 yAxisData,
-               basicDrawer,
-                style.defaultColors.pointColor,
-                5.dp.toPx()
+                basicDrawer
             )
 
             paintGradientUnderTheGraphLine(
                 this, offsetList, yAxisData, basicDrawer, style.fillGradient
             )
 
-            drawLineConnectingPoints(this, offsetList, style.lineColor, 2.dp.toPx())
+            drawLineConnectingPoints(this, offsetList, style.lineColor, style.lineWidth.toPx())
+
+
+            drawPoints(this, offsetList, dataPointStyles, style.defaultDataPointStyle, currentDensity)
 
             drawHighlightedPointAndCrossHair(
                 this,
                 clickedPoint,
                 style.clickHighlightColor,
-                12.dp.toPx(),
+                style.clickHighlightRadius.toPx(),
                 style.isCrossHairVisible,
                 style.crossHairColor,
-                2.dp.toPx(),
+                style.crossHairLineWidth.toPx(),
                 basicDrawer.gridHeight
             )
 
@@ -167,20 +175,16 @@ fun LineChart(
 
 }
 
-private fun constructOffsetListAndDrawPoints(
-    scope: DrawScope,
+private fun constructOffsetList(
     offsetList: MutableList<Offset>,
     data: List<Number>,
     basicChartDrawer: BasicChartDrawer,
-    pointColor: Color,
-    pointRadiusPx: Float
 ) {
     offsetList.clear() // clearing list to avoid data duplication during recomposition
 
-    for (i in data.indices) {
-
-        val x1 = chartXToCanvasX(i.toFloat(), basicChartDrawer)
-        val y1 = chartYtoCanvasY(data[i].toFloat(), basicChartDrawer)
+    data.forEachIndexed { idx, dataPoint ->
+        val x1 = chartXToCanvasX(idx.toFloat(), basicChartDrawer)
+        val y1 = chartYtoCanvasY(dataPoint.toFloat(), basicChartDrawer)
 
         offsetList.add(
             Offset(
@@ -188,11 +192,25 @@ private fun constructOffsetListAndDrawPoints(
                 y = y1
             )
         )
+    }
+}
+
+private fun drawPoints(
+    scope: DrawScope,
+    offsetList: MutableList<Offset>,
+    dataPointStyles: Map<Int, LineChartDataPointStyle>,
+    defaultStyle: LineChartDataPointStyle,
+    currentDensity: Density,
+) {
+    offsetList.forEachIndexed { idx, offset ->
+        val style = dataPointStyles.getOrElse(idx) {defaultStyle}
+
+        val radiusPx = with(currentDensity) {style.pointRadius.toPx()}
 
         scope.drawCircle(
-            color = pointColor,
-            radius = pointRadiusPx,
-            center = Offset(x1, y1)
+            color = style.pointColor,
+            radius = radiusPx,
+            center = offset
         )
     }
 }
@@ -234,6 +252,7 @@ private fun paintGradientUnderTheGraphLine(
 }
 
 private fun drawLineConnectingPoints(scope: DrawScope, offsetList: List<Offset>, lineColor: Color, lineWidth: Float) {
+
     /**
      * drawing line connecting all circles/points
      */
@@ -243,6 +262,7 @@ private fun drawLineConnectingPoints(scope: DrawScope, offsetList: List<Offset>,
         // Polygon mode draws the line that connects the points
         pointMode = PointMode.Polygon,
         strokeWidth = lineWidth,
+//        blendMode = BlendMode.DstOver
     )
 }
 

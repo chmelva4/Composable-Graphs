@@ -22,7 +22,11 @@ class DoublePointChartStyle(
     backgroundColor: Color = Color.Transparent,
     xAxisTextColor: Int = android.graphics.Color.BLACK,
     yAxisTextColor: Int = android.graphics.Color.BLACK,
-    yAxisLabelsPosition: YAxisLabelsPosition = YAxisLabelsPosition.LEFT
+    yAxisLabelsPosition: YAxisLabelsPosition = YAxisLabelsPosition.LEFT,
+
+    val defaultDataPointStyle: DoublePointChartDataPointStyle = DoublePointChartDataPointStyle()
+
+
 ): BasicChartStyle(
     paddingValues,
     canvasPaddingValues,

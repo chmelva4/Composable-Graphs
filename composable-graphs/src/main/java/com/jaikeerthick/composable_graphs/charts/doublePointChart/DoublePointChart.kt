@@ -7,8 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
@@ -30,9 +31,12 @@ fun DoublePointChart(
     header: @Composable() () -> Unit = {},
     style: DoublePointChartStyle = DoublePointChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
+    dataPointStyles: Map<Int, DoublePointChartDataPointStyle> = emptyMap(),
 ) {
 
     val offsetList = remember { mutableListOf<Pair<Offset, Offset>>()}
+
+    val currentDensity = LocalDensity.current
 
     Column(
         modifier = Modifier
@@ -85,8 +89,8 @@ fun DoublePointChart(
                 basicDrawer
             )
 
-            drawLineConnectingPoints(this, offsetList, Color.Magenta, 2.dp.toPx())
-            drawPoints(this, offsetList,  Color.Red, 3.dp.toPx())
+            drawLineConnectingPoints(this, offsetList, dataPointStyles, style.defaultDataPointStyle, currentDensity)
+            drawPoints(this, offsetList, dataPointStyles, style.defaultDataPointStyle, currentDensity)
         }
 
     }
@@ -115,24 +119,37 @@ private fun constructOffsetList(
 private fun drawPoints(
     scope: DrawScope,
     offsetList: List<Pair<Offset, Offset>>,
-    pointColor: Color,
-    pointRadiusPx: Float
+    dataPointStyles: Map<Int, DoublePointChartDataPointStyle>,
+    defaultStyle: DoublePointChartDataPointStyle,
+    currentDensity: Density
 ) {
 
-    offsetList.forEach {
-        scope.drawCircle(color = pointColor, radius = pointRadiusPx, center = Offset(it.first.x, it.first.y))
-        scope.drawCircle(color = pointColor, radius = pointRadiusPx, center = Offset(it.second.x, it.second.y)) }
+    offsetList.forEachIndexed { idx, offset ->
+
+        val style = dataPointStyles.getOrElse(idx) {defaultStyle}
+
+        val bottomRadiusPx = with(currentDensity) { style.bottomPointRadius.toPx() }
+        val topRadiusPx = with(currentDensity) { style.topPointRadius.toPx() }
+
+        scope.drawCircle(color = style.bottomPointColor, radius = bottomRadiusPx, center = offset.first)
+        scope.drawCircle(color = style.topPointColor, radius = topRadiusPx, center = offset.second) }
 }
 
 private fun drawLineConnectingPoints(
     scope: DrawScope,
     offsetList: List<Pair<Offset, Offset>>,
-    lineColor: Color,
-    lineWidth: Float
+    dataPointStyles: Map<Int, DoublePointChartDataPointStyle>,
+    defaultStyle: DoublePointChartDataPointStyle,
+    currentDensity: Density
 ) {
 
-    offsetList.forEach {
-        scope.drawLine(color = lineColor, start = it.first, end = it.second, strokeWidth = lineWidth)
+    offsetList.forEachIndexed { idx, points ->
+
+        val style = dataPointStyles.getOrElse(idx) {defaultStyle}
+
+        val lineWidthPx = with(currentDensity) { style.lineWidth.toPx() }
+
+        scope.drawLine(color = style.lineColor, start = points.first, end = points.second, strokeWidth = lineWidthPx)
     }
 
 }

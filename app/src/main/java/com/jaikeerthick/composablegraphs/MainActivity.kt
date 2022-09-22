@@ -15,17 +15,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.color.*
 import com.jaikeerthick.composable_graphs.charts.BarChart
+import com.jaikeerthick.composable_graphs.charts.barChart.BarChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
+import com.jaikeerthick.composable_graphs.charts.barChart.BarWidth
 import com.jaikeerthick.composable_graphs.charts.doublePointChart.DoublePointChart
 import com.jaikeerthick.composable_graphs.charts.doublePointChart.DoublePointChartStyle
 import com.jaikeerthick.composable_graphs.charts.common.GraphData
+import com.jaikeerthick.composable_graphs.charts.doublePointChart.DoublePointChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChart
-import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartColors
+import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartStyle
 import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
 import com.jaikeerthick.composable_graphs.decorations.HorizontalGridLines
@@ -54,24 +57,32 @@ class MainActivity : ComponentActivity() {
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
 
+                    val barWidthDp = LocalDensity.current.run { 10.dp.toPx() }
+
                     Box(modifier = Modifier.fillMaxWidth()){
 
                         val clickedValue: MutableState<Pair<Any,Any>?> = remember{ mutableStateOf(null) }
+
+                        val complementColor = LineChartDataPointStyle(Color(206, 26, 54).copy(alpha = 0.3f), 7.dp)
 
                         LineChart(
                             xAxisLabels = XAxisLabels(listOf("Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat").map {
                                 GraphData.String(it)
                             }),
                             yAxisData = listOf(200, 40, 60, 450, 700, 30, 50),
-                            style = LineChartStyle(canvasPaddingValues = PaddingValues(20.dp)),
+                            style = LineChartStyle(
+                                canvasPaddingValues = PaddingValues(20.dp),
+                                defaultDataPointStyle = LineChartDataPointStyle(Color(192, 26, 206)),
+                                lineWidth = 3.dp
+                            ),
                             decorations = listOf(
                                 VerticalGridLines(),
                                 HorizontalGridLines(),
-//                                HorizontalGridLines(),
-//                                BackgroundHighlight(100f, 300f, DeepPurple.copy(0.2f))
+                                //                                HorizontalGridLines(),
+                                //                                BackgroundHighlight(100f, 300f, DeepPurple.copy(0.2f))
                             ),
+                            dataPointStyles = mapOf(1 to complementColor, 3 to complementColor),
                             onPointClicked = {
-                                clickedValue.value = it
                             }
                         )
 
@@ -100,12 +111,18 @@ class MainActivity : ComponentActivity() {
                         ),
                         xAxisLabels = XAxisLabels(listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun").map {
                             GraphData.String(it)
-                        }, XAxisLabelsPosition.TOP)
+                        }, XAxisLabelsPosition.TOP),
+                        dataPointsStyles = mapOf(
+                            2 to BarChartDataPointStyle(Brush.horizontalGradient(listOf(Color.Red, Color.Red)), BarWidth.PxWidth(barWidthDp)),
+                            4 to BarChartDataPointStyle(barWidth = BarWidth.PercentageWidth(0.5f))
+                        )
+
                     )
 
                     DoublePointChart(
                         dataList = listOf(Pair(3, 7), Pair(5, 10), Pair(11, 25), Pair(13, 17), Pair(0, 5)),
                         style = DoublePointChartStyle(yAxisLabelsPosition = YAxisLabelsPosition.RIGHT),
+                        dataPointStyles = mapOf(1 to DoublePointChartDataPointStyle(topPointColor = Color.Red, bottomPointRadius = 6.dp, lineWidth = 12.dp)),
                         decorations = listOf(
                             VerticalGridLines(),
                             HorizontalGridLines(),
@@ -150,18 +167,22 @@ fun BarChartPreview() {
 @Preview("LineChartPreview", widthDp = 300, heightDp = 300, showBackground = true)
 @Composable()
 fun LineChartPreview() {
+
+    val complementColor = LineChartDataPointStyle(Color(206, 26, 54))
+
     LineChart(
         xAxisLabels = XAxisLabels(listOf("Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat").map {
             GraphData.String(it)
         }),
         yAxisData = listOf(200, 40, 60, 450, 700, 30, 50),
-        style = LineChartStyle(canvasPaddingValues = PaddingValues(20.dp)),
+        style = LineChartStyle(canvasPaddingValues = PaddingValues(20.dp), defaultDataPointStyle = LineChartDataPointStyle(Color(192, 26, 206))),
         decorations = listOf(
             VerticalGridLines(),
             HorizontalGridLines(),
             //                                HorizontalGridLines(),
             //                                BackgroundHighlight(100f, 300f, DeepPurple.copy(0.2f))
         ),
+        dataPointStyles = mapOf(1 to complementColor, 3 to complementColor),
         onPointClicked = {
         }
     )

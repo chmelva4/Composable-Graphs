@@ -125,10 +125,9 @@ fun LineChart(
                 yAxisData,
             )
 
-            drawPaddings(basicDrawer)
-
-            presentXAxisLabels.drawToCanvas(basicDrawer)
-            yAxisLabels.drawToCanvas(basicDrawer)
+            if (style.drawCanvasPaddings) drawPaddings(basicDrawer)
+            if (style.isXAxisLabelVisible) presentXAxisLabels.drawToCanvas(basicDrawer)
+            if (style.isYAxisLabelVisible) yAxisLabels.drawToCanvas(basicDrawer)
 
             decorations.forEach { it.drawToCanvas(basicDrawer) }
 

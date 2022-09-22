@@ -15,9 +15,10 @@ open class BasicChartStyle(
     ),
     val height: Dp = 300.dp,
 
-    val isYAxisLabelVisible: Boolean = false,
+    val isYAxisLabelVisible: Boolean = true,
     val isXAxisLabelVisible: Boolean = true,
     val isHeaderVisible: Boolean = false,
+    val drawCanvasPaddings: Boolean = false,
 
     val backgroundColor: Color = Color.Transparent,
     val xAxisTextColor: Int = android.graphics.Color.BLACK,

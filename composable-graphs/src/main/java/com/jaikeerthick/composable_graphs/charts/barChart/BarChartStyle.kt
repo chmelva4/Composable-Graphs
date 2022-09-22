@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.jaikeerthick.composable_graphs.charts.barChart.BarChartColors
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartStyle
 import com.jaikeerthick.composable_graphs.color.PointHighlight
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
@@ -18,9 +17,10 @@ class BarChartStyle(
     ),
     height: Dp = 300.dp,
 
-    isYAxisLabelVisible: Boolean = false,
+    isYAxisLabelVisible: Boolean = true,
     isXAxisLabelVisible: Boolean = true,
     isHeaderVisible: Boolean = false,
+    drawCanvasPadding: Boolean = false,
 
     backgroundColor: Color = Color.Transparent,
     xAxisTextColor: Int = android.graphics.Color.BLACK,
@@ -38,6 +38,7 @@ class BarChartStyle(
     isYAxisLabelVisible,
     isXAxisLabelVisible,
     isHeaderVisible,
+    drawCanvasPadding,
     backgroundColor,
     xAxisTextColor,
     yAxisTextColor,

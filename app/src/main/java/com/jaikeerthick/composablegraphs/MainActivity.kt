@@ -25,6 +25,7 @@ import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
 import com.jaikeerthick.composable_graphs.charts.doublePointChart.DoublePointChart
 import com.jaikeerthick.composable_graphs.charts.doublePointChart.DoublePointChartStyle
 import com.jaikeerthick.composable_graphs.charts.common.GraphData
+import com.jaikeerthick.composable_graphs.charts.doublePointChart.DoublePointChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChart
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartColors
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartStyle
@@ -111,6 +112,7 @@ class MainActivity : ComponentActivity() {
                     DoublePointChart(
                         dataList = listOf(Pair(3, 7), Pair(5, 10), Pair(11, 25), Pair(13, 17), Pair(0, 5)),
                         style = DoublePointChartStyle(yAxisLabelsPosition = YAxisLabelsPosition.RIGHT),
+                        dataPointStyles = mapOf(1 to DoublePointChartDataPointStyle(topPointColor = Color.Red, bottomPointRadius = 6.dp, lineWidth = 12.dp)),
                         decorations = listOf(
                             VerticalGridLines(),
                             HorizontalGridLines(),

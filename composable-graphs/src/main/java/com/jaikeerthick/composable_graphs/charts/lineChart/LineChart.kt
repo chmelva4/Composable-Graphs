@@ -20,18 +20,22 @@ import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
 import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.charts.common.YScale
 import com.jaikeerthick.composable_graphs.charts.drawPaddings
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 @Composable
 fun LineChart(
-    xAxisLabels: XAxisLabels? = null,
     yAxisData: List<Number>,
+    xAxisLabels: XAxisLabels? = null,
+    yAxisLabels: YAxisLabels = YAxisLabels.fromGraphInputs(yAxisData, Color.Black.toArgb(), YAxisLabelsPosition.LEFT),
+    yScale: YScale = YScale.ZeroToMaxScale(),
     header: @Composable() () -> Unit = {},
     style: LineChartStyle = LineChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
@@ -71,7 +75,7 @@ fun LineChart(
                 .height(style.height)
                 .padding(horizontal = 1.dp)
                 .padding(top = 12.dp)
-                .graphicsLayer(alpha = 0.99f)
+//                .graphicsLayer(alpha = 0.99f)
                 .pointerInput(true) {
 
                     detectTapGestures { p1: Offset ->
@@ -120,7 +124,7 @@ fun LineChart(
              */
 
             // XAxis labels handled at the top as they are needed for clicks
-            val yAxisLabels = YAxisLabels.fromGraphInputs(yAxisData, style.yAxisTextColor, style.yAxisLabelsPosition)
+            yScale.setupValuesFromData(yAxisData)
             val basicDrawer = BasicChartDrawer(
                 this,
                 size,
@@ -131,6 +135,7 @@ fun LineChart(
                 presentXAxisLabels,
                 yAxisLabels,
                 yAxisData,
+                yScale
             )
 
             if (style.drawCanvasPaddings) drawPaddings(basicDrawer)

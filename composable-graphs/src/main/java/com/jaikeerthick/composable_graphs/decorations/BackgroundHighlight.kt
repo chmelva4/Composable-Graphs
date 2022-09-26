@@ -26,6 +26,6 @@ fun DrawScope.drawBackgroundHighlight(
     drawRect(
         color = highlight.color,
         topLeft = Offset(basicChartDrawer.paddingLeftPx, chartYtoCanvasY(highlight.yEnd, basicChartDrawer)),
-        size = Size(basicChartDrawer.gridWidth,  (basicChartDrawer.yItemSpacing * (highlight.yEnd - highlight.yStart) / basicChartDrawer.verticalStep))
+        size = Size(basicChartDrawer.gridWidth, chartYtoCanvasY(highlight.yStart, basicChartDrawer) - chartYtoCanvasY(highlight.yEnd, basicChartDrawer))
     )
 }

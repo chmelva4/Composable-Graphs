@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.charts.common.YScale
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
@@ -28,6 +29,7 @@ import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
 fun BarChart(
     dataList: List<Number>,
     xAxisLabels: XAxisLabels? = null,
+    yScale: YScale = YScale.ZeroToMaxScale(),
     header: @Composable() () -> Unit = {},
     style: BarChartStyle = BarChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
@@ -84,6 +86,7 @@ fun BarChart(
 
             val yAxisLabels = YAxisLabels.fromGraphInputs(dataList, style.yAxisTextColor, style.yAxisLabelsPosition)
             val presentXAxisLabels = xAxisLabels?: XAxisLabels.createDefault(dataList, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
+            yScale.setupValuesFromData(dataList)
             val basicDrawer = BasicChartDrawer(
                 this,
                 size,
@@ -94,6 +97,7 @@ fun BarChart(
                 presentXAxisLabels,
                 yAxisLabels,
                 dataList,
+                yScale,
                 customXDataOffset = 0f
             )
 

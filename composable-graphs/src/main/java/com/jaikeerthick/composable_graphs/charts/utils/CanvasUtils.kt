@@ -6,4 +6,4 @@ fun chartXToCanvasX(x: Float, basicChartDrawer: BasicChartDrawer): Float =
     basicChartDrawer.paddingLeftPx + basicChartDrawer.xDataOffset + basicChartDrawer.xItemSpacing * x
 
 fun chartYtoCanvasY(y: Float, basicChartDrawer: BasicChartDrawer): Float =
-    basicChartDrawer.paddingTopPx + basicChartDrawer.gridHeight - ( basicChartDrawer.yItemSpacing * (y / basicChartDrawer.verticalStep))
+    basicChartDrawer.yScale.chartYToCanvasY(y, basicChartDrawer)

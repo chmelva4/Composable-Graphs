@@ -65,6 +65,7 @@ fun TelusApetiteChart() {
                 ),
                 yAxisTextColor = textColor.toArgb(),
                 isHeaderVisible = true,
+//                drawCanvasPadding = true,
             ),
             dataPointsStyles = mapOf(
                 0 to BarChartDataPointStyle(Brush.horizontalGradient(listOf(yellow, yellow)), BarWidth.PxWidth(barWidthPx)),

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
 import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.charts.common.YScale
 import com.jaikeerthick.composable_graphs.charts.drawPaddings
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
@@ -28,6 +29,7 @@ import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
 fun DoublePointChart(
     dataList: List<Pair<Number, Number>>,
     xAxisLabels: XAxisLabels? = null,
+    yScale: YScale = YScale.ZeroToMaxScale(),
     header: @Composable() () -> Unit = {},
     style: DoublePointChartStyle = DoublePointChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
@@ -63,6 +65,7 @@ fun DoublePointChart(
         ) {
 
             val maxList = dataList.map { it.second }
+            yScale.setupValuesFromData(maxList)
             val yAxisLabels = YAxisLabels.fromGraphInputs(maxList, style.yAxisTextColor, style.yAxisLabelsPosition)
             val presentXAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(maxList, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
             val basicDrawer = BasicChartDrawer(
@@ -75,6 +78,7 @@ fun DoublePointChart(
                 presentXAxisLabels,
                 yAxisLabels,
                 maxList,
+                yScale
             )
 
             if (style.drawCanvasPaddings) drawPaddings(basicDrawer)

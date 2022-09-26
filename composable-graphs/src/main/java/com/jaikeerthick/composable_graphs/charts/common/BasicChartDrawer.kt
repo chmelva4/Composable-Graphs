@@ -16,6 +16,7 @@ open class BasicChartDrawer(
     val xAxisLabels: XAxisLabels,
     val yAxisLabels: YAxisLabels,
     val dataList: List<Number>,
+    val yScale: YScale,
     val customXDataOffset: Float? = null,
     val customXLabelOffset: Float? = null,
 ) {

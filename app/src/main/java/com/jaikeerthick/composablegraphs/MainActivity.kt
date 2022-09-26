@@ -43,6 +43,7 @@ import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
 import com.jaikeerthick.composablegraphs.previews.TelusSleepChart
+import com.jaikeerthick.composablegraphs.previews.TelusSleepPreview
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +59,7 @@ class MainActivity : ComponentActivity() {
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
 
-                        TelusSleepChart()
+                       TelusSleepChart()
 
 
                 }

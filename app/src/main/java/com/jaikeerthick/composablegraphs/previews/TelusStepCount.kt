@@ -16,16 +16,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jaikeerthick.composable_graphs.charts.BarChart
+import com.jaikeerthick.composable_graphs.charts.barChart.BarChart
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
 import com.jaikeerthick.composable_graphs.charts.barChart.BarWidth
 import com.jaikeerthick.composable_graphs.charts.common.GraphData
 import com.jaikeerthick.composable_graphs.charts.common.YScale
+import com.jaikeerthick.composable_graphs.decorations.AxisLabelItem
 import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLine
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLineStyle
@@ -34,6 +34,7 @@ import com.jaikeerthick.composable_graphs.decorations.LabelXPosition
 import com.jaikeerthick.composable_graphs.decorations.LabelYPosition
 import com.jaikeerthick.composable_graphs.decorations.PaddingPositionType
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
 
 @Composable
 fun TelusStepCountChart() {
@@ -58,11 +59,13 @@ fun TelusStepCountChart() {
 
         val yScale = YScale.CustomScale(0f, 10000f)
         val nf = CompactDecimalFormat.getInstance(java.util.Locale.getDefault(), CompactDecimalFormat.CompactStyle.SHORT)
-        val yAxisLabelList = yScale.getLabels(6).map {nf.format(it)}
+        val yAxisLabelList = yScale.getLabels(6).map {AxisLabelItem(it, nf.format(it))}
 
         BarChart(
             xAxisLabels = XAxisLabels(listOf("7 JN", "8 JN", "9 JN", "10 JN").map { GraphData.String(it) }, color = textColor.toArgb()),
-            dataList = listOf(5800f, 8400f, 8600f, 8000f),
+            yAxisLabels = YAxisLabels(yAxisLabelList, textColor.toArgb()),
+            yScale = yScale,
+            data = listOf(5800f, 8400f, 8600f, 8000f),
             style = BarChartStyle(
                 //                height = 200.dp,
                 canvasPaddingValues = PaddingValues(start = 40.dp, end = 20.dp, top = 10.dp, bottom = 20.dp),

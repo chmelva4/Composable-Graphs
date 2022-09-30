@@ -61,7 +61,7 @@ fun TelusWeightChart() {
 
         LineChart(
             xAxisLabels = XAxisLabels(listOf("7 JN", "8 JN", "9 JN", "10 JN").map { GraphData.String(it) }, color = textColor.toArgb()),
-            yAxisData = data,
+            data = data,
             yAxisLabels = yAxisLabels,
             yScale = yScale,
             style = LineChartStyle(

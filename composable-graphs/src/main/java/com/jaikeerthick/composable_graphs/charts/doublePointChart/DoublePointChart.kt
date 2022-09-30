@@ -21,17 +21,20 @@ import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
 
 /**
  * A minimal and stunning Graph
  */
 @Composable
 fun DoublePointChart(
-    dataList: List<Pair<Number, Number>>,
+    data: List<Pair<Number, Number>>,
+    style: DoublePointChartStyle = DoublePointChartStyle(),
     xAxisLabels: XAxisLabels? = null,
+    yAxisLabels: YAxisLabels = YAxisLabels.fromGraphInputs(data.map { it.first } + data.map { it.second }, style.yAxisTextColor, YAxisLabelsPosition.LEFT),
     yScale: YScale = YScale.ZeroToMaxScale(),
     header: @Composable() () -> Unit = {},
-    style: DoublePointChartStyle = DoublePointChartStyle(),
+
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
     dataPointStyles: Map<Int, DoublePointChartDataPointStyle> = emptyMap(),
 ) {
@@ -64,9 +67,8 @@ fun DoublePointChart(
                 ,
         ) {
 
-            val maxList = dataList.map { it.second }
+            val maxList = data.map { it.second }
             yScale.setupValuesFromData(maxList)
-            val yAxisLabels = YAxisLabels.fromGraphInputs(maxList, style.yAxisTextColor, style.yAxisLabelsPosition)
             val presentXAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(maxList, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
             val basicDrawer = BasicChartDrawer(
                 this,
@@ -89,7 +91,7 @@ fun DoublePointChart(
 
             constructOffsetList(
                 offsetList,
-                dataList,
+                data,
                 basicDrawer
             )
 

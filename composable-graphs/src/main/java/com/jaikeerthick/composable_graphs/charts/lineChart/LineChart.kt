@@ -32,12 +32,12 @@ import kotlin.math.sqrt
 
 @Composable
 fun LineChart(
-    yAxisData: List<Number>,
+    data: List<Number>,
+    style: LineChartStyle = LineChartStyle(),
     xAxisLabels: XAxisLabels? = null,
-    yAxisLabels: YAxisLabels = YAxisLabels.fromGraphInputs(yAxisData, Color.Black.toArgb(), YAxisLabelsPosition.LEFT),
+    yAxisLabels: YAxisLabels = YAxisLabels.fromGraphInputs(data, Color.Black.toArgb(), YAxisLabelsPosition.LEFT),
     yScale: YScale = YScale.ZeroToMaxScale(),
     header: @Composable() () -> Unit = {},
-    style: LineChartStyle = LineChartStyle(),
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
     dataPointStyles: Map<Int, LineChartDataPointStyle> = emptyMap(),
     onPointClicked: (pair: Pair<Any,Any>) -> Unit = {},
@@ -46,7 +46,7 @@ fun LineChart(
     val offsetList = remember{ mutableListOf<Offset>() }
     val isPointClicked = remember { mutableStateOf(false) }
     val clickedPoint: MutableState<Offset?> = remember { mutableStateOf(null) }
-    val presentXAxisLabels: XAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(yAxisData, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
+    val presentXAxisLabels: XAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(data, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
 
     val currentDensity = LocalDensity.current
 
@@ -105,7 +105,7 @@ fun LineChart(
 
                             //
                             val index = offsetList.indexOf(it)
-                            onPointClicked(Pair(presentXAxisLabels.labels[index].text, yAxisData[index]))
+                            onPointClicked(Pair(presentXAxisLabels.labels[index].text, data[index]))
                         }
 
                     }
@@ -124,7 +124,7 @@ fun LineChart(
              */
 
             // XAxis labels handled at the top as they are needed for clicks
-            yScale.setupValuesFromData(yAxisData)
+            yScale.setupValuesFromData(data)
             val basicDrawer = BasicChartDrawer(
                 this,
                 size,
@@ -134,7 +134,7 @@ fun LineChart(
                 style.canvasPaddingValues.calculateBottomPadding().toPx(),
                 presentXAxisLabels,
                 yAxisLabels,
-                yAxisData,
+                data,
                 yScale
             )
 
@@ -146,12 +146,12 @@ fun LineChart(
 
             constructOffsetList(
                 offsetList,
-                yAxisData,
+                data,
                 basicDrawer
             )
 
             paintGradientUnderTheGraphLine(
-                this, offsetList, yAxisData, basicDrawer, style.fillGradient
+                this, offsetList, data, basicDrawer, style.fillGradient
             )
 
             drawLineConnectingPoints(this, offsetList, style.lineColor, style.lineWidth.toPx())

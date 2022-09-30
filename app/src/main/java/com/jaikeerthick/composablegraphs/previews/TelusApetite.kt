@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jaikeerthick.composable_graphs.charts.BarChart
+import com.jaikeerthick.composable_graphs.charts.barChart.BarChart
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
 import com.jaikeerthick.composable_graphs.charts.barChart.BarWidth
@@ -55,7 +55,7 @@ fun TelusApetiteChart() {
 
         BarChart(
             xAxisLabels = XAxisLabels(listOf("7 JN", "8 JN", "9 JN", "10 JN").map { GraphData.String(it) }, color = textColor.toArgb()),
-            dataList = listOf(1f, 3f, 4f, 2f),
+            data = listOf(1f, 3f, 4f, 2f),
             style = BarChartStyle(
                 //                height = 200.dp,
                 canvasPaddingValues = PaddingValues(20.dp),

@@ -22,6 +22,7 @@ import com.jaikeerthick.composable_graphs.charts.common.YScale
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChart
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartStyle
+import com.jaikeerthick.composable_graphs.decorations.AxisLabelItem
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLine
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLineStyle
 import com.jaikeerthick.composable_graphs.decorations.Label
@@ -56,7 +57,7 @@ fun TelusWeightChart() {
         val data = listOf(75.25f, 75.4f, 75.5f, 75.2f)
 //        val dataMin = data.
         val yScale = YScale.MinMaxAsNearestValue(10f, data.minOf { it }, data.maxOf { it })
-        val yAxisLabels = YAxisLabels(yScale.getLabels(5).map { it.toString() }, textColor.toArgb())
+        val yAxisLabels = YAxisLabels(yScale.getLabels(5).map { AxisLabelItem(it) }, textColor.toArgb())
 
         LineChart(
             xAxisLabels = XAxisLabels(listOf("7 JN", "8 JN", "9 JN", "10 JN").map { GraphData.String(it) }, color = textColor.toArgb()),

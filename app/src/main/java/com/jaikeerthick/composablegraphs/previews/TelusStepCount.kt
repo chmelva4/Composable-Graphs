@@ -1,5 +1,6 @@
 package com.jaikeerthick.composablegraphs.previews
 
+import android.icu.text.CompactDecimalFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +25,7 @@ import com.jaikeerthick.composable_graphs.charts.barChart.BarChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
 import com.jaikeerthick.composable_graphs.charts.barChart.BarWidth
 import com.jaikeerthick.composable_graphs.charts.common.GraphData
+import com.jaikeerthick.composable_graphs.charts.common.YScale
 import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLine
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLineStyle
@@ -52,6 +55,10 @@ fun TelusStepCountChart() {
         val labelTextColor = Color(88, 61, 120)
         val barWidthPx = LocalDensity.current.run { 10.dp.toPx() }
         val lineWidthPx = LocalDensity.current.run { 2.dp.toPx() }
+
+        val yScale = YScale.CustomScale(0f, 10000f)
+        val nf = CompactDecimalFormat.getInstance(java.util.Locale.getDefault(), CompactDecimalFormat.CompactStyle.SHORT)
+        val yAxisLabelList = yScale.getLabels(6).map {nf.format(it)}
 
         BarChart(
             xAxisLabels = XAxisLabels(listOf("7 JN", "8 JN", "9 JN", "10 JN").map { GraphData.String(it) }, color = textColor.toArgb()),

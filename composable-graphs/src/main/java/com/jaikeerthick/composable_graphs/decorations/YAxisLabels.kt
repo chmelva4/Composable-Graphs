@@ -13,7 +13,7 @@ import com.jaikeerthick.composable_graphs.charts.utils.GraphHelper
 import kotlin.math.roundToInt
 
 data class YAxisLabels(
-    val labels: List<String>,
+    val labels: List<AxisLabelItem>,
     val color: Int = Color.Black.toArgb(),
     val position: YAxisLabelsPosition = YAxisLabelsPosition.LEFT,
 ): CanvasDrawable {
@@ -22,11 +22,11 @@ data class YAxisLabels(
             val absMaxY = GraphHelper.getAbsoluteMax(inputs)
             val verticalStep = absMaxY.toInt() / inputs.size.toFloat()
 
-            val yAxisLabelList = mutableListOf<String>()
+            val yAxisLabelList = mutableListOf<AxisLabelItem>()
 
 
             for (i in 0..inputs.size) {
-                yAxisLabelList.add((verticalStep * i).roundToInt().toString())
+                yAxisLabelList.add(AxisLabelItem(verticalStep * i))
             }
             return YAxisLabels(yAxisLabelList, color, position)
         }
@@ -58,12 +58,12 @@ fun DrawScope.drawYAxisLabels(labels: YAxisLabels, basicChartDrawer: BasicChartD
 //        Log.d("DECORATION", "draw y label val: $label locaction x: ${basicChartDrawer.paddingLeftPx + basicChartDrawer.gridWidth} y: ${basicChartDrawer.yItemSpacing * idx}")
 
         val textBounds = Rect()
-        textPaint.getTextBounds(label, 0, label.length, textBounds)
+        textPaint.getTextBounds(label.label, 0, label.label.length, textBounds)
 
         drawContext.canvas.nativeCanvas.drawText(
-            label,
+            label.label,
             x.toFloat(),
-            chartYtoCanvasY(label.toFloat(), basicChartDrawer) - textBounds.exactCenterY(), //y
+            chartYtoCanvasY(label.chartValue, basicChartDrawer) - textBounds.exactCenterY(), //y
             textPaint
         )
 

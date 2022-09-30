@@ -35,6 +35,7 @@ import com.jaikeerthick.composable_graphs.charts.drawPaddings
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChart
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartStyle
+import com.jaikeerthick.composable_graphs.decorations.AxisLabelItem
 import com.jaikeerthick.composable_graphs.decorations.BackgroundHighlight
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLine
 import com.jaikeerthick.composable_graphs.decorations.HorizontalLineStyle
@@ -65,7 +66,14 @@ fun TelusSleepChart() {
         val barWidthPx = LocalDensity.current.run { 10.dp.toPx() }
         val lineWidthPx = LocalDensity.current.run { 2.dp.toPx() }
 
-        val yAxisLabels = YAxisLabels(listOf("6.5", "7", "7.5", "8", "8.5"), textColor.toArgb())
+        val yAxisLabels = YAxisLabels(
+            listOf(
+                AxisLabelItem(6.5f),
+                AxisLabelItem(7f),
+                AxisLabelItem(7.5f),
+                AxisLabelItem(8f),
+                AxisLabelItem(8.5f)
+            ), textColor.toArgb())
 
         LineChart(
             xAxisLabels = XAxisLabels(listOf("7 JN", "8 JN", "9 JN", "10 JN").map { GraphData.String(it) }, color = textColor.toArgb()),

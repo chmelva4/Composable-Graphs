@@ -23,8 +23,8 @@ fun DrawScope.drawHorizontalGridLines(gridLines: HorizontalGridLines, basicChart
     for (label in basicChartDrawer.yAxisLabels.labels) {
         drawLine(
             color = gridLines.color,
-            start = Offset(basicChartDrawer.paddingLeftPx, chartYtoCanvasY(label.toFloat(), basicChartDrawer)),
-            end = Offset(basicChartDrawer.paddingLeftPx + basicChartDrawer.gridWidth , chartYtoCanvasY(label.toFloat(), basicChartDrawer)),
+            start = Offset(basicChartDrawer.paddingLeftPx, chartYtoCanvasY(label.chartValue, basicChartDrawer)),
+            end = Offset(basicChartDrawer.paddingLeftPx + basicChartDrawer.gridWidth , chartYtoCanvasY(label.chartValue, basicChartDrawer)),
             strokeWidth = gridLines.heightPx.toFloat()
         )
     }

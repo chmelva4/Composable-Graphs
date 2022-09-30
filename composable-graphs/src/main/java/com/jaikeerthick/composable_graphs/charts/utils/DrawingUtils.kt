@@ -1,7 +1,8 @@
-package com.jaikeerthick.composable_graphs.charts
+package com.jaikeerthick.composable_graphs.charts.utils
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
 
@@ -26,3 +27,5 @@ fun drawPaddings(basicChartDrawer: BasicChartDrawer) {
         Size(width = basicChartDrawer.paddingRightPx, height = basicChartDrawer.canvasSize.height)
     )
 }
+
+fun Brush.Companion.fromColor(color: Color): Brush = horizontalGradient(listOf(color, color))

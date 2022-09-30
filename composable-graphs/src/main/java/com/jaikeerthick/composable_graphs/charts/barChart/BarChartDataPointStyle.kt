@@ -1,6 +1,7 @@
 package com.jaikeerthick.composable_graphs.charts.barChart
 
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import com.jaikeerthick.composable_graphs.color.Gradient1
 import com.jaikeerthick.composable_graphs.color.Gradient2
 
@@ -9,7 +10,8 @@ data class BarChartDataPointStyle(
     val fillGradient: Brush = Brush.verticalGradient(
         listOf(Gradient1, Gradient2)
     ),
-    val barWidth: BarWidth = BarWidth.FullWidth()
+    val barWidth: BarWidth = BarWidth.FullWidth(),
+    val cornerRadiusPx: Float = 0f
 )
 
 sealed class BarWidth() {

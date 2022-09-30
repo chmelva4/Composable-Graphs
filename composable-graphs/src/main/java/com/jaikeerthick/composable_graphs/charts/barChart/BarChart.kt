@@ -9,6 +9,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
@@ -20,7 +21,7 @@ import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
 import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
 import com.jaikeerthick.composable_graphs.charts.common.YScale
-import com.jaikeerthick.composable_graphs.charts.drawPaddings
+import com.jaikeerthick.composable_graphs.charts.utils.drawPaddings
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
@@ -158,7 +159,7 @@ private fun constructGraph(
         val x = style.barWidth.getLeftSideXCoordinate(chartXToCanvasX((i).toFloat(), basicChartDrawer), chartXToCanvasX((i + 1).toFloat(), basicChartDrawer))
         val width = style.barWidth.getSize(chartXToCanvasX((i).toFloat(), basicChartDrawer), chartXToCanvasX((i + 1).toFloat(), basicChartDrawer))
 
-        scope.drawRect(
+        scope.drawRoundRect(
             brush = style.fillGradient,
             topLeft = Offset(
                 x = x,
@@ -167,7 +168,8 @@ private fun constructGraph(
             size = Size(
                 width = width,
                 height = basicChartDrawer.paddingTopPx +  basicChartDrawer.gridHeight - y1
-            )
+            ),
+            cornerRadius = CornerRadius(style.cornerRadiusPx, style.cornerRadiusPx)
         )
 
     }

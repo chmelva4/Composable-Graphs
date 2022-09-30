@@ -56,6 +56,7 @@ fun TelusStepCountChart() {
         val labelTextColor = Color(88, 61, 120)
         val barWidthPx = LocalDensity.current.run { 10.dp.toPx() }
         val lineWidthPx = LocalDensity.current.run { 2.dp.toPx() }
+        val cornerRadiusPx = LocalDensity.current.run { 10.dp.toPx() }
 
         val yScale = YScale.CustomScale(0f, 10000f)
         val nf = CompactDecimalFormat.getInstance(java.util.Locale.getDefault(), CompactDecimalFormat.CompactStyle.SHORT)
@@ -71,14 +72,15 @@ fun TelusStepCountChart() {
                 canvasPaddingValues = PaddingValues(start = 40.dp, end = 20.dp, top = 10.dp, bottom = 20.dp),
                 defaultDataPointStyle = BarChartDataPointStyle(
                     Brush.horizontalGradient(listOf(barColor, barColor)),
-                    BarWidth.PxWidth(barWidthPx)
+                    BarWidth.PxWidth(barWidthPx),
+                    cornerRadiusPx
                 ),
                 yAxisTextColor = textColor.toArgb(),
                 isHeaderVisible = true,
             ),
             dataPointsStyles = mapOf(
-                0 to BarChartDataPointStyle(Brush.horizontalGradient(listOf(yellow, yellow)), BarWidth.PxWidth(barWidthPx)),
-                3 to BarChartDataPointStyle(Brush.horizontalGradient(listOf(lightPurple, lightPurple)), BarWidth.PxWidth(barWidthPx))
+                0 to BarChartDataPointStyle(Brush.horizontalGradient(listOf(yellow, yellow)), BarWidth.PxWidth(barWidthPx), cornerRadiusPx),
+                3 to BarChartDataPointStyle(Brush.horizontalGradient(listOf(lightPurple, lightPurple)), BarWidth.PxWidth(barWidthPx), cornerRadiusPx)
             ),
             decorations = listOf(
                 BackgroundHighlight(6500f, 9000f, bg),

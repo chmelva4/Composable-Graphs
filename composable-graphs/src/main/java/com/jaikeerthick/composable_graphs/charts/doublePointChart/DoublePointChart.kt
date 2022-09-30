@@ -16,7 +16,7 @@ import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
 import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
 import com.jaikeerthick.composable_graphs.charts.common.YScale
-import com.jaikeerthick.composable_graphs.charts.drawPaddings
+import com.jaikeerthick.composable_graphs.charts.utils.drawPaddings
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition

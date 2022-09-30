@@ -75,7 +75,7 @@ fun TelusWeightChart() {
 //                drawCanvasPadding = true,
             ),
             header = { BasicChartHeader(
-                title = "Weight", rightCornerText = "2 hours ago", boldText = "75.2", theRestOfText = "kg"
+                title = "Weight", rightCornerText = "2 hours ago", boldText = "75.2", theRestOfText = "kg", badgeText = "Personal"
             )},
             decorations = listOf(
                 HorizontalLine(72.0f, lightPurple, lineWidthPx, HorizontalLineStyle.DASHED),

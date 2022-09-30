@@ -11,6 +11,20 @@ sealed class YScale {
     protected abstract var min: Float
     protected abstract var max: Float
 
+    fun getLabels(count: Int = 5): List<Float> {
+
+        val labels = mutableListOf<Float>()
+
+        val step = (max - min) / (count - 1)
+
+        for (i in 0 until count) {
+            labels.add(min + i*step)
+        }
+
+        return labels
+
+    }
+
     class ZeroToMaxScale(): YScale() {
         override fun setupValuesFromData(data: List<Number>) {
            max = GraphHelper.getAbsoluteMax(data).toFloat()

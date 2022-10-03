@@ -97,7 +97,7 @@ fun DoublePointChart(
             )
 
             drawLineConnectingPoints(this, offsetList, dataPointStyles, style.defaultDataPointStyle, currentDensity)
-            drawPoints(this, offsetList, dataPointStyles, style.defaultDataPointStyle, currentDensity)
+            drawPoints(basicDrawer, offsetList, dataPointStyles, style.defaultDataPointStyle, currentDensity)
         }
 
     }
@@ -124,7 +124,7 @@ private fun constructOffsetList(
 }
 
 private fun drawPoints(
-    scope: DrawScope,
+    basicChartDrawer: BasicChartDrawer,
     offsetList: List<Pair<Offset, Offset>>,
     dataPointStyles: Map<Int, DoublePointChartDataPointStyle>,
     defaultStyle: DoublePointChartDataPointStyle,
@@ -133,13 +133,11 @@ private fun drawPoints(
 
     offsetList.forEachIndexed { idx, offset ->
 
-        val style = dataPointStyles.getOrElse(idx) {defaultStyle}
+        val style = dataPointStyles.getOrElse(idx) { defaultStyle }
 
-        val bottomRadiusPx = with(currentDensity) { style.bottomPointRadius.toPx() }
-        val topRadiusPx = with(currentDensity) { style.topPointRadius.toPx() }
-
-        scope.drawCircle(color = style.bottomPointColor, radius = bottomRadiusPx, center = offset.first)
-        scope.drawCircle(color = style.topPointColor, radius = topRadiusPx, center = offset.second) }
+        style.bottomPointStyle.drawToCanvas(offset.first.x, offset.first.y, basicChartDrawer)
+        style.topPointStyle.drawToCanvas(offset.second.x, offset.second.y, basicChartDrawer)
+    }
 }
 
 private fun drawLineConnectingPoints(

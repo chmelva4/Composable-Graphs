@@ -95,7 +95,7 @@ fun TelusStepCountChart() {
                 )
             ),
             header = {
-                BasicChartHeader(title = "Step count", "2 hours ago", "8316", "steps")
+                BasicChartHeader(title = "Step count", "2 hours ago", "8316", "steps", "Personal")
             }
 
 

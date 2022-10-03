@@ -111,7 +111,7 @@ fun LineChartPreview() {
 fun DoublePointChartPreview() {
     DoublePointChart(
         data = listOf(Pair(3, 7), Pair(5, 10), Pair(11, 25), Pair(13, 17), Pair(0, 5)),
-        style = DoublePointChartStyle(yAxisLabelsPosition = YAxisLabelsPosition.RIGHT, isXAxisLabelVisible = false),
+        style = DoublePointChartStyle(yAxisLabelsPosition = YAxisLabelsPosition.RIGHT, isXAxisLabelVisible = false, canvasPaddingValues = PaddingValues(30.dp)),
         decorations = listOf(
             VerticalGridLines(),
             HorizontalGridLines(),
@@ -120,7 +120,7 @@ fun DoublePointChartPreview() {
             HorizontalLine(12f, DeepPurple.copy(0.2f), 5f, HorizontalLineStyle.DASHED),
             Label(
                 "12",
-                LabelXPosition.PaddingPosition(PaddingPositionType.LEFT),
+                LabelXPosition.PaddingPosition(PaddingPositionType.RIGHT),
                 LabelYPosition.ChartPosition(12f),
                 Color.Green.copy(0.35f),
             ),

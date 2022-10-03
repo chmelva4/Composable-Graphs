@@ -4,6 +4,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
@@ -20,20 +23,24 @@ import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
 import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
-import com.jaikeerthick.composable_graphs.charts.drawPaddings
+import com.jaikeerthick.composable_graphs.charts.common.YScale
+import com.jaikeerthick.composable_graphs.charts.utils.drawPaddings
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 @Composable
 fun LineChart(
-    xAxisLabels: XAxisLabels? = null,
-    yAxisData: List<Number>,
-    header: @Composable() () -> Unit = {},
+    data: List<Number>,
     style: LineChartStyle = LineChartStyle(),
+    xAxisLabels: XAxisLabels? = null,
+    yAxisLabels: YAxisLabels = YAxisLabels.fromGraphInputs(data, Color.Black.toArgb(), YAxisLabelsPosition.LEFT),
+    yScale: YScale = YScale.ZeroToMaxScale(),
+    header: @Composable() () -> Unit = {},
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
     dataPointStyles: Map<Int, LineChartDataPointStyle> = emptyMap(),
     onPointClicked: (pair: Pair<Any,Any>) -> Unit = {},
@@ -42,11 +49,9 @@ fun LineChart(
     val offsetList = remember{ mutableListOf<Offset>() }
     val isPointClicked = remember { mutableStateOf(false) }
     val clickedPoint: MutableState<Offset?> = remember { mutableStateOf(null) }
-    val presentXAxisLabels: XAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(yAxisData, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
+    val presentXAxisLabels: XAxisLabels = xAxisLabels ?: XAxisLabels.createDefault(data, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
 
     val currentDensity = LocalDensity.current
-
-
 
     Column(
         modifier = Modifier
@@ -70,8 +75,7 @@ fun LineChart(
                 .fillMaxWidth()
                 .height(style.height)
                 .padding(horizontal = 1.dp)
-                .padding(top = 12.dp)
-                .graphicsLayer(alpha = 0.99f)
+                .padding(top = 12.dp) //                .graphicsLayer(alpha = 0.99f)
                 .pointerInput(true) {
 
                     detectTapGestures { p1: Offset ->
@@ -101,15 +105,13 @@ fun LineChart(
 
                             //
                             val index = offsetList.indexOf(it)
-                            onPointClicked(Pair(presentXAxisLabels.labels[index].text, yAxisData[index]))
+                            onPointClicked(Pair(presentXAxisLabels.labels[index].text, data[index]))
                         }
 
                     }
 
                 },
         ) {
-
-
 
 
                 //println("Entered scope")
@@ -120,7 +122,7 @@ fun LineChart(
              */
 
             // XAxis labels handled at the top as they are needed for clicks
-            val yAxisLabels = YAxisLabels.fromGraphInputs(yAxisData, style.yAxisTextColor, style.yAxisLabelsPosition)
+            yScale.setupValuesFromData(data)
             val basicDrawer = BasicChartDrawer(
                 this,
                 size,
@@ -130,7 +132,9 @@ fun LineChart(
                 style.canvasPaddingValues.calculateBottomPadding().toPx(),
                 presentXAxisLabels,
                 yAxisLabels,
-                yAxisData,
+                data,
+                yScale,
+                style.backgroundColor
             )
 
             if (style.drawCanvasPaddings) drawPaddings(basicDrawer)
@@ -141,18 +145,18 @@ fun LineChart(
 
             constructOffsetList(
                 offsetList,
-                yAxisData,
+                data,
                 basicDrawer
             )
 
             paintGradientUnderTheGraphLine(
-                this, offsetList, yAxisData, basicDrawer, style.fillGradient
+                this, offsetList, data, basicDrawer, style.fillGradient
             )
 
             drawLineConnectingPoints(this, offsetList, style.lineColor, style.lineWidth.toPx())
 
 
-            drawPoints(this, offsetList, dataPointStyles, style.defaultDataPointStyle, currentDensity)
+            drawPoints(basicDrawer, offsetList, dataPointStyles, style.defaultDataPointStyle, currentDensity)
 
             drawHighlightedPointAndCrossHair(
                 this,
@@ -196,7 +200,7 @@ private fun constructOffsetList(
 }
 
 private fun drawPoints(
-    scope: DrawScope,
+    basicChartDrawer: BasicChartDrawer,
     offsetList: MutableList<Offset>,
     dataPointStyles: Map<Int, LineChartDataPointStyle>,
     defaultStyle: LineChartDataPointStyle,
@@ -205,13 +209,7 @@ private fun drawPoints(
     offsetList.forEachIndexed { idx, offset ->
         val style = dataPointStyles.getOrElse(idx) {defaultStyle}
 
-        val radiusPx = with(currentDensity) {style.pointRadius.toPx()}
-
-        scope.drawCircle(
-            color = style.pointColor,
-            radius = radiusPx,
-            center = offset
-        )
+        style.pointStyle.drawToCanvas(offset.x, offset.y, basicChartDrawer)
     }
 }
 

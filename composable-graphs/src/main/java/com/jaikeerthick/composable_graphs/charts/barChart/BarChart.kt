@@ -1,4 +1,4 @@
-package com.jaikeerthick.composable_graphs.charts
+package com.jaikeerthick.composable_graphs.charts.barChart
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -9,6 +9,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
@@ -16,20 +17,25 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.jaikeerthick.composable_graphs.charts.barChart.BarChartDataPointStyle
-import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
+import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
+import com.jaikeerthick.composable_graphs.charts.chartYtoCanvasY
 import com.jaikeerthick.composable_graphs.charts.common.BasicChartDrawer
+import com.jaikeerthick.composable_graphs.charts.common.YScale
+import com.jaikeerthick.composable_graphs.charts.utils.drawPaddings
 import com.jaikeerthick.composable_graphs.decorations.CanvasDrawable
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
+import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
 
 @Composable
 fun BarChart(
-    dataList: List<Number>,
-    xAxisLabels: XAxisLabels? = null,
-    header: @Composable() () -> Unit = {},
+    data: List<Number>,
     style: BarChartStyle = BarChartStyle(),
+    xAxisLabels: XAxisLabels? = null,
+    yAxisLabels: YAxisLabels = YAxisLabels.fromGraphInputs(data, style.yAxisTextColor, YAxisLabelsPosition.LEFT),
+    yScale: YScale = YScale.ZeroToMaxScale(),
+    header: @Composable() () -> Unit = {},
     decorations: List<CanvasDrawable> = emptyList<CanvasDrawable>(),
     dataPointsStyles: Map<Int, BarChartDataPointStyle> = emptyMap(),
     onBarClicked: (value: Any) -> Unit = {},
@@ -73,7 +79,7 @@ fun BarChart(
                         click?.let {
 
                             val index = barOffsetList.indexOf(it)
-                            onBarClicked(dataList[index])
+                            onBarClicked(data[index])
 
                             clickedBar.value = it.first
                         }
@@ -82,8 +88,8 @@ fun BarChart(
                 },
         ) {
 
-            val yAxisLabels = YAxisLabels.fromGraphInputs(dataList, style.yAxisTextColor, style.yAxisLabelsPosition)
-            val presentXAxisLabels = xAxisLabels?: XAxisLabels.createDefault(dataList, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
+            val presentXAxisLabels = xAxisLabels?: XAxisLabels.createDefault(data, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
+            yScale.setupValuesFromData(data)
             val basicDrawer = BasicChartDrawer(
                 this,
                 size,
@@ -93,7 +99,9 @@ fun BarChart(
                 style.canvasPaddingValues.calculateBottomPadding().toPx(),
                 presentXAxisLabels,
                 yAxisLabels,
-                dataList,
+                data,
+                yScale,
+                style.backgroundColor,
                 customXDataOffset = 0f
             )
 
@@ -105,7 +113,7 @@ fun BarChart(
 
             constructGraph(
                 this,
-                dataList,
+                data,
                 barOffsetList,
                 basicDrawer,
                 dataPointsStyles,
@@ -152,7 +160,7 @@ private fun constructGraph(
         val x = style.barWidth.getLeftSideXCoordinate(chartXToCanvasX((i).toFloat(), basicChartDrawer), chartXToCanvasX((i + 1).toFloat(), basicChartDrawer))
         val width = style.barWidth.getSize(chartXToCanvasX((i).toFloat(), basicChartDrawer), chartXToCanvasX((i + 1).toFloat(), basicChartDrawer))
 
-        scope.drawRect(
+        scope.drawRoundRect(
             brush = style.fillGradient,
             topLeft = Offset(
                 x = x,
@@ -161,7 +169,8 @@ private fun constructGraph(
             size = Size(
                 width = width,
                 height = basicChartDrawer.paddingTopPx +  basicChartDrawer.gridHeight - y1
-            )
+            ),
+            cornerRadius = CornerRadius(style.cornerRadiusPx, style.cornerRadiusPx)
         )
 
     }

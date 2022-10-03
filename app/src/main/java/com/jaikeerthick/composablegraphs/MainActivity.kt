@@ -36,6 +36,7 @@ import com.jaikeerthick.composable_graphs.decorations.VerticalGridLines
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabelsPosition
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabelsPosition
+import com.jaikeerthick.composablegraphs.previews.TelusStepCountChart
 import com.jaikeerthick.composablegraphs.previews.TelusWeightChart
 
 class MainActivity : ComponentActivity() {
@@ -53,6 +54,8 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                        TelusWeightChart()
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TelusStepCountChart()
 
 
                 }

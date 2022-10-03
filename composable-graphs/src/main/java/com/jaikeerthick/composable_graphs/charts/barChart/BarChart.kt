@@ -15,6 +15,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.charts.chartXToCanvasX
@@ -66,6 +68,12 @@ fun BarChart(
                 .height(style.height)
                 .padding(horizontal = 1.dp)
                 .padding(top = 12.dp) // to prevent overlap with header
+                .semantics {
+                    contentDescription = "Bar chart of data"
+//                    customProp = "aaa"
+
+
+                }
                 .pointerInput(true) {
 
                     detectTapGestures { p1: Offset ->

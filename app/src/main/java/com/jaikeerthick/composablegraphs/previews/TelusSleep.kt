@@ -8,12 +8,18 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,10 +57,13 @@ fun TelusSleepChart() {
         val lightPurple = Color(214, 203, 227)
         val bg = Color(242, 239, 244)
         val labelTextColor = Color(88, 61, 120)
-        val barWidthPx = LocalDensity.current.run { 10.dp.toPx() }
         val lineWidthPx = LocalDensity.current.run { 2.dp.toPx() }
         val pointRadiusPx = LocalDensity.current.run { 5.dp.toPx() }
         val strokeRadius = LocalDensity.current.run { 2.dp.toPx() }
+        val imageRadius = LocalDensity.current.run { 10.dp.toPx() }
+
+        val imagePainter = rememberVectorPainter(image = Icons.Outlined.Lock)
+
 
         val yAxisLabels = YAxisLabels(
             listOf(
@@ -100,7 +109,7 @@ fun TelusSleepChart() {
             dataPointStyles = mapOf(
                 0 to LineChartDataPointStyle(PointStyle.FilledPoint(pointRadiusPx, yellow)),
                 1 to LineChartDataPointStyle(PointStyle.FilledPoint(pointRadiusPx, yellow)),
-                2 to LineChartDataPointStyle(PointStyle.FilledPoint(pointRadiusPx, Color.Black.copy(0.5f))),
+                2 to LineChartDataPointStyle(PointStyle.ImagePointStyle(imagePainter, imageRadius, imageRadius, defaultColor)),
             )
 
         )

@@ -4,6 +4,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
@@ -50,8 +53,6 @@ fun LineChart(
 
     val currentDensity = LocalDensity.current
 
-
-
     Column(
         modifier = Modifier
             .background(
@@ -74,8 +75,7 @@ fun LineChart(
                 .fillMaxWidth()
                 .height(style.height)
                 .padding(horizontal = 1.dp)
-                .padding(top = 12.dp)
-//                .graphicsLayer(alpha = 0.99f)
+                .padding(top = 12.dp) //                .graphicsLayer(alpha = 0.99f)
                 .pointerInput(true) {
 
                     detectTapGestures { p1: Offset ->
@@ -112,8 +112,6 @@ fun LineChart(
 
                 },
         ) {
-
-
 
 
                 //println("Entered scope")

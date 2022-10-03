@@ -11,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jaikeerthick.composable_graphs.color.*
@@ -19,6 +20,7 @@ import com.jaikeerthick.composable_graphs.charts.barChart.BarChartStyle
 import com.jaikeerthick.composable_graphs.charts.doublePointChart.DoublePointChart
 import com.jaikeerthick.composable_graphs.charts.doublePointChart.DoublePointChartStyle
 import com.jaikeerthick.composable_graphs.charts.common.GraphData
+import com.jaikeerthick.composable_graphs.charts.common.PointStyle
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChart
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartDataPointStyle
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartStyle
@@ -82,14 +84,16 @@ fun BarChartPreview() {
 @Composable()
 fun LineChartPreview() {
 
-    val complementColor = LineChartDataPointStyle(Color(206, 26, 54))
+    val radiusPx = LocalDensity.current.run { 5.dp.toPx() }
+
+    val complementColor = LineChartDataPointStyle(PointStyle.FilledPoint(radiusPx))
 
     LineChart(
         xAxisLabels = XAxisLabels(listOf("Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat").map {
             GraphData.String(it)
         }),
         data = listOf(200, 40, 60, 450, 700, 30, 50),
-        style = LineChartStyle(canvasPaddingValues = PaddingValues(20.dp), defaultDataPointStyle = LineChartDataPointStyle(Color(192, 26, 206))),
+        style = LineChartStyle(canvasPaddingValues = PaddingValues(20.dp), defaultDataPointStyle = LineChartDataPointStyle(PointStyle.FilledPoint(radiusPx, Color(192, 26, 206)))),
         decorations = listOf(
             VerticalGridLines(),
             HorizontalGridLines(),

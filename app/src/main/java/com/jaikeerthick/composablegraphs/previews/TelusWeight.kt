@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.charts.common.GraphData
+import com.jaikeerthick.composable_graphs.charts.common.PointStyle
 import com.jaikeerthick.composable_graphs.charts.common.YScale
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChart
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartDataPointStyle
@@ -51,6 +52,8 @@ fun TelusWeightChart() {
         val bg = Color(242, 239, 244)
         val labelTextColor = Color(88, 61, 120)
         val lineWidthPx = LocalDensity.current.run { 2.dp.toPx() }
+        val pointRadiusPx = LocalDensity.current.run { 5.dp.toPx() }
+        val outlineWidthPx = LocalDensity.current.run { 2.dp.toPx() }
 
 
 
@@ -65,6 +68,7 @@ fun TelusWeightChart() {
             yAxisLabels = yAxisLabels,
             yScale = yScale,
             style = LineChartStyle(
+                backgroundColor = Color.White,
                 canvasPaddingValues = PaddingValues(horizontal = 30.dp, vertical = 5.dp),
                 paddingValues = PaddingValues(12.dp),
 //                isYAxisLabelVisible = false,
@@ -72,7 +76,7 @@ fun TelusWeightChart() {
                 lineColor = lineColor,
                 xAxisTextColor = labelTextColor.toArgb(),
                 yAxisTextColor = labelTextColor.toArgb(),
-                defaultDataPointStyle = LineChartDataPointStyle(lineColor)
+                defaultDataPointStyle = LineChartDataPointStyle(PointStyle.OutlinedPoint(pointRadiusPx, lineColor, outlineWidthPx))
 //                drawCanvasPadding = true,
             ),
             header = { BasicChartHeader(

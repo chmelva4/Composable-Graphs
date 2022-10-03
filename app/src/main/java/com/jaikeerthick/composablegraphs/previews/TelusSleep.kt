@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jaikeerthick.composable_graphs.charts.common.GraphData
+import com.jaikeerthick.composable_graphs.charts.common.PointStyle
 import com.jaikeerthick.composable_graphs.charts.common.YScale
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChart
 import com.jaikeerthick.composable_graphs.charts.lineChart.LineChartDataPointStyle
@@ -45,13 +46,15 @@ fun TelusSleepChart() {
             .wrapContentHeight()
     ) {
         val textColor = Color(105, 110, 113)
-        val barColor = Color(95, 64, 133)
+        val defaultColor = Color(95, 64, 133)
         val yellow = Color(243, 175, 86)
         val lightPurple = Color(214, 203, 227)
         val bg = Color(242, 239, 244)
         val labelTextColor = Color(88, 61, 120)
         val barWidthPx = LocalDensity.current.run { 10.dp.toPx() }
         val lineWidthPx = LocalDensity.current.run { 2.dp.toPx() }
+        val pointRadiusPx = LocalDensity.current.run { 5.dp.toPx() }
+        val strokeRadius = LocalDensity.current.run { 2.dp.toPx() }
 
         val yAxisLabels = YAxisLabels(
             listOf(
@@ -68,12 +71,15 @@ fun TelusSleepChart() {
             yAxisLabels = yAxisLabels,
             yScale = YScale.MinMaxAsNearestValue(.5f, 6.3f, 8.2f),
             style = LineChartStyle(
+                backgroundColor = Color.White,
                 canvasPaddingValues = PaddingValues(horizontal = 30.dp, vertical = 5.dp),
                 paddingValues = PaddingValues(12.dp),
 //                isYAxisLabelVisible = false,
                 isHeaderVisible = true,
                 xAxisTextColor = labelTextColor.toArgb(),
 //                drawCanvasPadding = true,
+                defaultDataPointStyle = LineChartDataPointStyle(PointStyle.OutlinedPoint(pointRadiusPx, defaultColor, strokeRadius)),
+                lineColor = defaultColor,
             ),
             header = { BasicChartHeader(
                 title = "Sleep", rightCornerText = "2 hours ago", boldText = "8.3", theRestOfText = "hours"
@@ -92,9 +98,9 @@ fun TelusSleepChart() {
                 )
             ),
             dataPointStyles = mapOf(
-                0 to LineChartDataPointStyle(yellow),
-                1 to LineChartDataPointStyle(yellow),
-                2 to LineChartDataPointStyle(Color.Black),
+                0 to LineChartDataPointStyle(PointStyle.FilledPoint(pointRadiusPx, yellow)),
+                1 to LineChartDataPointStyle(PointStyle.FilledPoint(pointRadiusPx, yellow)),
+                2 to LineChartDataPointStyle(PointStyle.FilledPoint(pointRadiusPx, Color.Black.copy(0.5f))),
             )
 
         )

@@ -1,6 +1,7 @@
 package com.jaikeerthick.composable_graphs.charts.common
 
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.jaikeerthick.composable_graphs.decorations.XAxisLabels
 import com.jaikeerthick.composable_graphs.decorations.YAxisLabels
@@ -17,6 +18,7 @@ open class BasicChartDrawer(
     val yAxisLabels: YAxisLabels,
     val dataList: List<Number>,
     val yScale: YScale,
+    val canvasBgColor: Color,
     val customXDataOffset: Float? = null,
     val customXLabelOffset: Float? = null,
 ) {

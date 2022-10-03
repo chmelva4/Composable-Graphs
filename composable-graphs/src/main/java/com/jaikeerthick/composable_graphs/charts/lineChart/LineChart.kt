@@ -135,7 +135,8 @@ fun LineChart(
                 presentXAxisLabels,
                 yAxisLabels,
                 data,
-                yScale
+                yScale,
+                style.backgroundColor
             )
 
             if (style.drawCanvasPaddings) drawPaddings(basicDrawer)
@@ -157,7 +158,7 @@ fun LineChart(
             drawLineConnectingPoints(this, offsetList, style.lineColor, style.lineWidth.toPx())
 
 
-            drawPoints(this, offsetList, dataPointStyles, style.defaultDataPointStyle, currentDensity)
+            drawPoints(basicDrawer, offsetList, dataPointStyles, style.defaultDataPointStyle, currentDensity)
 
             drawHighlightedPointAndCrossHair(
                 this,
@@ -201,7 +202,7 @@ private fun constructOffsetList(
 }
 
 private fun drawPoints(
-    scope: DrawScope,
+    basicChartDrawer: BasicChartDrawer,
     offsetList: MutableList<Offset>,
     dataPointStyles: Map<Int, LineChartDataPointStyle>,
     defaultStyle: LineChartDataPointStyle,
@@ -210,13 +211,7 @@ private fun drawPoints(
     offsetList.forEachIndexed { idx, offset ->
         val style = dataPointStyles.getOrElse(idx) {defaultStyle}
 
-        val radiusPx = with(currentDensity) {style.pointRadius.toPx()}
-
-        scope.drawCircle(
-            color = style.pointColor,
-            radius = radiusPx,
-            center = offset
-        )
+        style.pointStyle.drawToCanvas(offset.x, offset.y, basicChartDrawer)
     }
 }
 

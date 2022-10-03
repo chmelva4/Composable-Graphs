@@ -101,6 +101,7 @@ fun BarChart(
                 yAxisLabels,
                 data,
                 yScale,
+                style.backgroundColor,
                 customXDataOffset = 0f
             )
 

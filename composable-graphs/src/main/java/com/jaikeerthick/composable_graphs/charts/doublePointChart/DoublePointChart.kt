@@ -80,7 +80,8 @@ fun DoublePointChart(
                 presentXAxisLabels,
                 yAxisLabels,
                 maxList,
-                yScale
+                yScale,
+                style.backgroundColor
             )
 
             if (style.drawCanvasPaddings) drawPaddings(basicDrawer)

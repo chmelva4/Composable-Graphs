@@ -6,9 +6,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,8 +44,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
+import com.jaikeerthick.composable_graphs.charts.common.FocusDirection
 import com.jaikeerthick.composable_graphs.charts.common.SwipeDirection
 import com.jaikeerthick.composable_graphs.charts.common.SwipeGestureRecognizer
+import com.jaikeerthick.composable_graphs.charts.common.rememberActiveDataPointStateHolder
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.math.log
@@ -62,15 +68,32 @@ fun BarChart(
     val barOffsetList = remember { mutableListOf<Pair<Offset, Offset>>() }
     val clickedBar: MutableState<Offset?> = remember { mutableStateOf(null) }
 
-    var activeIndex: Int? by remember { mutableStateOf(null)}
+    val coroutineScope = rememberCoroutineScope()
+    val activeDataPointStateHolder = rememberActiveDataPointStateHolder(data.size, coroutineScope)
+
+    val activeIndex by activeDataPointStateHolder.activeItemFlow.collectAsState()
 
     val activeBar: Pair<Offset, Offset>? = remember(activeIndex, barOffsetList) {
         if (activeIndex == null) return@remember null
-
         return@remember barOffsetList.getOrNull(activeIndex!!)
     }
 
-    val coroutineScope = rememberCoroutineScope()
+    DisposableEffect(activeDataPointStateHolder) {
+
+        val onFocusOutJob = coroutineScope.launch {
+            Log.d("BarChart", "SH focus out evt sub")
+            activeDataPointStateHolder.onFocusOutEvent.collect {
+                Log.d("BarChart", "FO: $it")
+            }
+        }
+
+        onDispose {
+            Log.d("BarChart", "SH focus out evt dispose")
+            onFocusOutJob.cancel()
+        }
+    }
+
+
 
 
     Column(
@@ -81,10 +104,26 @@ fun BarChart(
             .fillMaxWidth()
             .padding(style.paddingValues)
             .wrapContentHeight()
+            .pointerInput(true) {
+                activeDataPointStateHolder.gestureRecognizer.pointerInputScope = this
+            }
     ) {
 
         if (style.isHeaderVisible){
             header()
+        }
+
+        Row() {
+            Button(onClick = {
+                activeDataPointStateHolder.focusIn(FocusDirection.FRONT)
+            }) {
+                Text("Front")
+            }
+            Button(onClick = {
+                activeDataPointStateHolder.focusIn(FocusDirection.BACK)
+            }) {
+                Text("Back")
+            }
         }
 
 
@@ -98,48 +137,6 @@ fun BarChart(
                     contentDescription = "Bar chart of data" //                    customProp = "aaa"
 
                 }
-                .pointerInput(true) { //                    this
-                    Log.d("GESTURE", "PI: out")
-                    val gr = SwipeGestureRecognizer()
-                    gr.hookUpPointerScope(this, coroutineScope)
-                    coroutineScope.launch {
-                        gr.swipeEvents.collect {
-                            when (it) {
-                                SwipeDirection.LEFT -> {
-                                    Log.d("GESTURE", "swipe left ai $activeIndex")
-                                    if (activeIndex != null && activeIndex!! > 0) {
-                                        activeIndex = activeIndex!! - 1
-                                    }
-                                }
-                                SwipeDirection.RIGHT -> {
-                                    Log.d("GESTURE", "swipe right ai $activeIndex")
-                                    if (activeIndex != null && activeIndex!! < barOffsetList.size - 1) {
-                                        activeIndex = activeIndex!! + 1
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    Log.d("GESTURE", "hookUpPointerScope: after")
-
-                    detectTapGestures { p1: Offset -> //
-                        //                        val click = barOffsetList.find {
-                        //
-                        //                            (it.first.x < p1.x) && (it.second.x > p1.x) // check if our touch point is between left and right side of the bar
-                        //                                    && (p1.y > it.first.y) // check if our touch point is below the top of the bar
-                        //                        }
-                        //
-                        //                        click?.let {
-                        //
-                        //                            val index = barOffsetList.indexOf(it)
-                        //                            onBarClicked(data[index])
-                        //
-                        //                            clickedBar.value = it.first
-                        //                        }
-                    }
-
-                },
         ) {
 
             val presentXAxisLabels = xAxisLabels?: XAxisLabels.createDefault(data, XAxisLabelsPosition.BOTTOM, style.xAxisTextColor)
@@ -172,10 +169,7 @@ fun BarChart(
                 basicDrawer,
                 dataPointsStyles,
                 style.defaultDataPointStyle,
-                activeIndex
-            ) {
-                activeIndex = it
-            }
+            )
 
             drawClickedRect(this, clickedBar, style.clickHighlightColor, basicDrawer)
             drawActiveRect(this, activeBar, basicDrawer)
@@ -193,8 +187,6 @@ private fun constructGraph(
     basicChartDrawer: BasicChartDrawer,
     dataPointsStyles: Map<Int, BarChartDataPointStyle>,
     defaultDataPointStyle: BarChartDataPointStyle,
-    activeBarIndex: Int?,
-    setActiveBar: (Int?) -> Unit
 ) {
     barOffsetList.clear()
     for (i in dataList.indices) {
@@ -234,15 +226,6 @@ private fun constructGraph(
         )
 
     }
-
-    Log.d("Gesture", "recomp $activeBarIndex")
-
-    if (barOffsetList.isNotEmpty()) {
-        if (activeBarIndex == null)  setActiveBar(0)
-    }
-    else setActiveBar(null)
-
-
 }
 
 private fun drawClickedRect(

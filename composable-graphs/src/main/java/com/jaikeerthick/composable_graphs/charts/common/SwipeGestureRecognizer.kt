@@ -6,23 +6,28 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-class SwipeGestureRecognizer {
+class SwipeGestureRecognizer(
+    private val coroutineScope: CoroutineScope
+) {
 
     private val _swipeEvents = MutableSharedFlow<SwipeDirection>()
     val swipeEvents = _swipeEvents.asSharedFlow()
 
     private var currentDirection = SwipeDirection.RIGHT
 
-    fun hookUpPointerScope(pointerInputScope: PointerInputScope, coroutineScope: CoroutineScope) {
+    private var gestureDetectionJob: Job? = null
 
-//        _swipeEvents.
-        coroutineScope.launch {
+    lateinit var pointerInputScope: PointerInputScope
+
+    fun turnOn() {
+        gestureDetectionJob?.cancel()
+        gestureDetectionJob = coroutineScope.launch {
             with(pointerInputScope) {
-                Log.d("GESTURE", "hookUpPointerScope: ")
                 detectHorizontalDragGestures(
                     onDragEnd = {
                         coroutineScope.launch {
@@ -39,11 +44,10 @@ class SwipeGestureRecognizer {
                 }
             }
         }
+    }
 
-//        Log.d("GESTURE", "hookUpPointerScope: out")
-
-
-
+    fun turnOff() {
+        gestureDetectionJob?.cancel()
     }
 
 }
